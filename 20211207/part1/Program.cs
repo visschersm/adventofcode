@@ -10,7 +10,7 @@ var min = input.Min();
 var max = input.Max();
 
 int lowestFuelConsumption = int.MaxValue;
-for(int i = min; i < max; ++i)
+for (int i = min; i < max; ++i)
 {
     lowestFuelConsumption = Math.Min(lowestFuelConsumption, input.Select(x => Math.Abs(x - i)).Sum());
 }
