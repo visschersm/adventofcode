@@ -16,15 +16,12 @@ for (int step = 0; step < numberOfSteps; ++step)
 {
     groupedPairs = groupedPairs.Select(x => (key: x.key, count: (long)x.count))
         .GroupBy(x => x.key)
-        .Select(x => (key: x.Key, count: x.Sum(g => (long)g.count)))
-        .OrderBy(x => x.key);
+        .Select(x => (key: x.Key, count: x.Sum(g => (long)g.count)));
 
-    var newGroups = groupedPairs.Select(x => (key: $"{x.key[0]}{insertions[x.key]}{x.key[1]}", count: (long)x.count))
-        .OrderBy(x => x.key);
+    var newGroups = groupedPairs.Select(x => (key: $"{x.key[0]}{insertions[x.key]}{x.key[1]}", count: (long)x.count));
 
     groupedPairs = newGroups.SelectMany(x => SelectPairs(x.key)
-        .Select(p => (key: p, count: (long)x.count)))
-        .OrderBy(x => x.key);
+        .Select(p => (key: p, count: (long)x.count)));
 
     Console.WriteLine($"Done computing: {step + 1}");
 }
