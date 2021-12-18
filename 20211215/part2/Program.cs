@@ -1,4 +1,6 @@
-﻿Point[][] originalInput = File.ReadAllLines("input.txt")
+﻿using System.Diagnostics;
+
+Point[][] originalInput = File.ReadAllLines("input.txt")
     .Select((line, y) =>
         line.Select((value, x) =>
             new Point
@@ -72,6 +74,9 @@ startDistance.MinRisk = 0;
 
 int counter = 0;
 
+Stopwatch stopWatch = new Stopwatch();
+stopWatch.Start();
+
 do
 {
     if (counter++ % 100 == 0)
@@ -100,7 +105,9 @@ do
     unvisited.Remove(currentDistance);
 } while (unvisited.Count > 0);
 
+Console.WriteLine($"Computing result took: {stopWatch.Elapsed:mm\\:ss\\.ff}");
 Console.WriteLine($"Minimal risk: {distances.Last().MinRisk}");
+
 return;
 
 Point[] NextStep(Point point)
