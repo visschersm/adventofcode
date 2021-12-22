@@ -1,22 +1,19 @@
 ﻿using System.Text;
 
-var input = File.ReadLines("test-input4.txt").First();
+var input = File.ReadLines("input.txt").First();
 
 var binaryArray = input.Select(c => HexToBinary(c.ToString()));
 var packet = string.Join("", binaryArray);
 Console.WriteLine($"Packet: {packet}");
 
-long counter = 0;
+var result = ReadPacket();
 
-ReadPacket();
+Console.WriteLine($"Result: {result}");
 
-Console.WriteLine($"Total version: {counter}");
-
-void ReadPacket()
+long ReadPacket()
 {
     var versionBin = packet[0..3];
     var version = BinaryToDecimal(new string(versionBin));
-    counter += version;
     Console.WriteLine($"Version: {versionBin} - {version}");
 
     var typeId = packet[3..6];
@@ -24,29 +21,38 @@ void ReadPacket()
     Console.WriteLine($"TypeId: {typeId}: type: {type}");
 
     packet = packet[6..];
-    type switch
+
+    return type switch
     {
+        0 => ReadOperatorPacket(Operator.SUM),
+        1 => ReadOperatorPacket(Operator.MUL),
+        2 => ReadOperatorPacket(Operator.MIN),
+        3 => ReadOperatorPacket(Operator.MAX),
         4 => LiteralValue(),
-        _ => ReadOperatorPacket()
+        5 => ReadOperatorPacket(Operator.GT),
+        6 => ReadOperatorPacket(Operator.LT),
+        7 => ReadOperatorPacket(Operator.EQ),
+        _ => throw new NotImplementedException()
     };
 }
 
-void ReadOperatorPacket()
+long ReadOperatorPacket(Operator op)
 {
     Console.WriteLine($"Operator packet found: {packet}");
 
     var lengthTypeId = packet[0];
     Console.WriteLine($"LengthTypeID: {lengthTypeId}");
 
-    lengthTypeId switch
+    packet = packet[1..];
+    return lengthTypeId switch
     {
-        '0' => LengthPacket(packet[1..]),
-        '1' => AmountPacket(packet[1..]),
+        '0' => LengthPacket(op),
+        '1' => AmountPacket(op),
         _ => throw new NotImplementedException()
     };
 }
 
-void AmountPacket()
+long AmountPacket(Operator op)
 {
     Console.WriteLine($"Amount packet found: {packet}");
 
@@ -54,33 +60,43 @@ void AmountPacket()
     Console.WriteLine($"SubPacketAmount: {subPacketAmount}");
     packet = packet[11..];
 
+    long? result = null;
     for (int i = 0; i < subPacketAmount; ++i)
     {
-        ReadPacket();
+        var value = ReadPacket();
+        result = Calculate(result, value, op);
     }
+
+    return result ?? throw new Exception("No result found");
 }
 
-void LengthPacket()
+long LengthPacket(Operator op)
 {
     Console.WriteLine($"Length packet found {packet}");
     var subPacketLength = BinaryToDecimal(new string(packet[..15]));
     Console.WriteLine($"SubPacketLength: {subPacketLength}");
 
     packet = packet[15..];
-    Console.WriteLine($"SubPacket: {subPacket}");
+    Console.WriteLine($"SubPacket: {packet}");
 
     int readBytes = 0;
-    int packetLength = subPacket.Length;
+    int packetLength = packet.Length;
+    
+    long? result = null;
 
     do
     {
-        packet = ReadPacket(packet);
+        var value = ReadPacket();
+        result = Calculate(result, value, op);
+        
         readBytes = packetLength - packet.Length;
         Console.WriteLine($"Read bytes: {readBytes}");
     } while (readBytes < subPacketLength);
+
+    return result ?? throw new Exception("No result found");
 }
 
-void LiteralValue()
+long LiteralValue()
 {
     Console.WriteLine($"Literal packet found: {packet}");
     StringBuilder valueBuilder = new StringBuilder();
@@ -101,6 +117,25 @@ void LiteralValue()
     var value = BinaryToDecimal(valueBuilder.ToString());
 
     Console.WriteLine($"Value: {value}");
+    return value;
+}
+
+long Calculate(long? result, long value, Operator op)
+{
+    if(result == null)
+        return value;
+
+    return op switch
+    {
+        Operator.SUM => result!.Value + value,
+        Operator.MUL => result!.Value * value,
+        Operator.MIN => Math.Min(result!.Value, value),
+        Operator.MAX => Math.Max(result!.Value, value),
+        Operator.GT => result!.Value > value ? 1 : 0,
+        Operator.LT => result!.Value < value ? 1 : 0,
+        Operator.EQ => result!.Value == value ? 1 : 0,
+        _ => throw new NotImplementedException()
+    };
 }
 
 long HexToDecimal(string hexValue) => Convert.ToInt64(hexValue, 16);
@@ -110,3 +145,14 @@ string DecimalToBinary(long decValue) => Convert.ToString(decValue, 2).PadLeft(4
 
 string HexToBinary(string hexValue) => DecimalToBinary(HexToDecimal(hexValue));
 string BinaryToHex(string binaryValue) => DecimalToHex(BinaryToDecimal(binaryValue));
+
+public enum Operator
+{
+    SUM,
+    MUL,
+    MIN,
+    MAX,
+    GT,
+    LT,
+    EQ
+}
