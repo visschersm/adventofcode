@@ -7,18 +7,34 @@ Node node2 = new Node(new Node(3,4), 5);
 Node result = node1 + node2;
 
 Console.WriteLine($"{node1} + {node2} = {result}");
-//[[[[[9,8],1],2],3],4] becomes [[[[0,9],2],3],4]
 //[[[[[9,8],1],2],3],4] becomes [[[[0,9],2],3],4] (the 9 has no regular number to its left, so it is not added to any regular number).
 Node explodingNode = new Node(new Node(new Node(new Node(new Node(9, 8), 1), 2), 3), 4);
 Console.WriteLine($"Exploding:\t{explodingNode}");
 explodingNode.Reduce();
 Console.WriteLine($"Exploded:\t{explodingNode}");
 
-//[7,[6,[5,[4,[3,2]]]]] becomes [7,[6,[5,[7,0]]]] (the 2 has no regular number to its right, and so it is not added to any regular number).
-Node otherExplodingNode = new Node(7, new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
-Console.WriteLine($"Exploding:\t{otherExplodingNode}");
-otherExplodingNode.Reduce();
-Console.WriteLine($"Exploded:\t{otherExplodingNode}");
+// [7,[6,[5,[4,[3,2]]]]] becomes [7,[6,[5,[7,0]]]] (the 2 has no regular number to its right, and so it is not added to any regular number).
+explodingNode = new Node(7, new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
+Console.WriteLine($"Exploding:\t{explodingNode}");
+explodingNode.Reduce();
+Console.WriteLine($"Exploded:\t{explodingNode}");
+
+
+// [[6,[5,[4,[3,2]]]],1] becomes [[6,[5,[7,0]]],3]
+explodingNode = new Node(new Node(6, new Node(5, new Node(4, new Node(3, 2)))), 1);
+Console.WriteLine($"Exploding:\t{explodingNode}");
+explodingNode.Reduce();
+Console.WriteLine($"Exploded:\t{explodingNode}");
+
+//[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] 
+//(the pair [3,2] is unaffected because the pair [7,3] is further to the left; 
+// [3,2] would explode on the next action).
+// [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[7,0]]]].
+explodingNode = new Node(new Node(3, new Node(2, new Node(1, new Node(7, 3)))), new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
+Console.WriteLine($"Exploding:\t{explodingNode}");
+explodingNode.Reduce();
+Console.WriteLine($"Exploded:\t{explodingNode}");
+
 public class Node
 {
     public Node(int a, int b)
@@ -80,58 +96,58 @@ public class Node
     {
         if(depth == 4)
         {
-            var grandParent = parent.parent;
-            var explodingNode = parent?.b;
+            var isExploding = this.a?.value != null && this.b?.value != null;
 
-            if(explodingNode != null)
+            if(isExploding)
             {
-                if(explodingNode?.parent?.b?.value != null)
+                var root = this.parent.parent.parent.parent;
+                
+                int avalue = (int)(this.a.value);
+                int bvalue = (int)(this.b.value);
+
+                this.a = null;
+                this.b = null;
+
+                if(this.parent.a.value != null)
                 {
-                    int value = (int)(explodingNode!.b!.value! + explodingNode!.parent.b!.value!);
-                    grandParent.a = new Node(0, value);
+                    this.parent.a.value += avalue;
+                }
+                else if(this.parent.parent.a.value != null)
+                {
+                    this.parent.parent.a.value += avalue;
+                }
+                else if(this.parent.parent.parent.a.value != null)
+                {
+                    this.parent.parent.parent.a.value += avalue;
+                }
+                else if(this.parent.parent.parent.parent.a.value != null)
+                {
+                    this.parent.parent.parent.parent.a.value += avalue;
+                }
+                
+                if(this.parent.b.value != null)
+                {
+                    this.parent.b.value += bvalue;
+                }
+                else if(this.parent.parent.b.value != null)
+                {
+                    this.parent.parent.b.value += bvalue;
+                } 
+                else if(this.parent.parent.parent.b.value != null)
+                {
+                    this.parent.parent.parent.b.value += bvalue;
+                }
+                else if(this.parent.parent.parent.parent.b.value != null)
+                {
+                    this.parent.parent.parent.parent.b.value += bvalue;
                 }
 
-                if(explodingNode?.a?.value != null)
-                {
-                    int value = (int)(explodingNode!.a!.value! + explodingNode!.parent.a!.value!);
-                    grandParent.b = new Node(value, 0);
-                }
+                this.value = 0;
             }
         }
 
         a?.Explode(depth + 1);
         b?.Explode(depth + 1);
-        return;
-        // b.Explode(++depth);
-        //a?.a?.a?.a
-        //a?.a?.a?.b
-        // var grandParent = a?.a;
-        // var parent = grandParent?.a;
-        // var explodingNode = parent?.a;
-        // if(explodingNode != null)
-        // {
-        //     if(explodingNode == explodingNode.parent.a)
-        //     {
-        //         int value = (int)(explodingNode!.b!.value! + explodingNode!.parent.b!.value!);
-        //         grandParent.a = new Node(0, value);
-        //     }
-
-        //     if(explodingNode == explodingNode.parent.b)
-        //     {
-        //         int value = (int)(explodingNode!.a!.value! + explodingNode!.parent.a!.value!);
-        //         grandParent.a = new Node(value, 0);
-        //     }
-        //     //[[9,8],1]
-        //     // explodingNode.parent.a.value = explodingNode.a.value + explodingNode.parent.a.value;
-        //     // Console.WriteLine($"ANode: {explodingNode.parent.a}");
-        //     // explodingNode.parent.b.value = explodingNode.b.value + explodingNode.parent.b.value;
-        //     // Console.WriteLine($"Calculate: [{explodingNode.parent.a.value},{explodingNode.parent.b.value}]");
-        //     //explodingNode.b.value + explodingNode.parent.b.value;
-        // }
-        // else
-        // {
-        //     Console.WriteLine("No explode");
-        // }
     }
 
     Node? parent;
