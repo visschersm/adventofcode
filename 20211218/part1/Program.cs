@@ -2,38 +2,47 @@
 
 // For example, [1,2] + [[3,4],5] becomes [[1,2],[[3,4],5]].
 Node node1 = new Node(1, 2);
-Node node2 = new Node(new Node(3,4), 5);
+Node node2 = new Node(new Node(3, 4), 5);
 
 Node result = node1 + node2;
 
 Console.WriteLine($"{node1} + {node2} = {result}");
-//[[[[[9,8],1],2],3],4] becomes [[[[0,9],2],3],4] (the 9 has no regular number to its left, so it is not added to any regular number).
-Node explodingNode = new Node(new Node(new Node(new Node(new Node(9, 8), 1), 2), 3), 4);
-Console.WriteLine($"Exploding:\t{explodingNode}");
-explodingNode.Reduce();
-Console.WriteLine($"Exploded:\t{explodingNode}");
 
-// [7,[6,[5,[4,[3,2]]]]] becomes [7,[6,[5,[7,0]]]] (the 2 has no regular number to its right, and so it is not added to any regular number).
-explodingNode = new Node(7, new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
-Console.WriteLine($"Exploding:\t{explodingNode}");
-explodingNode.Reduce();
-Console.WriteLine($"Exploded:\t{explodingNode}");
+Node bah = new Node(1, new Node(2, 3));
+Console.WriteLine($"Source: {bah.b}");
+Console.WriteLine($"Left: {bah.b.NearestLeftNeighbour()}");
+Console.WriteLine();
+
+Node foo = new Node(new Node(1, 2), new Node(3, 4));
+Console.WriteLine($"Source: {foo.b.a}");
+Console.WriteLine($"Left: {foo.b.a.NearestLeftNeighbour()}");
+// //[[[[[9,8],1],2],3],4] becomes [[[[0,9],2],3],4] (the 9 has no regular number to its left, so it is not added to any regular number).
+// Node explodingNode = new Node(new Node(new Node(new Node(new Node(9, 8), 1), 2), 3), 4);
+// Console.WriteLine($"Exploding:\t{explodingNode}");
+// explodingNode.Reduce();
+// Console.WriteLine($"Exploded:\t{explodingNode}");
+
+// // [7,[6,[5,[4,[3,2]]]]] becomes [7,[6,[5,[7,0]]]] (the 2 has no regular number to its right, and so it is not added to any regular number).
+// explodingNode = new Node(7, new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
+// Console.WriteLine($"Exploding:\t{explodingNode}");
+// explodingNode.Reduce();
+// Console.WriteLine($"Exploded:\t{explodingNode}");
 
 
-// [[6,[5,[4,[3,2]]]],1] becomes [[6,[5,[7,0]]],3]
-explodingNode = new Node(new Node(6, new Node(5, new Node(4, new Node(3, 2)))), 1);
-Console.WriteLine($"Exploding:\t{explodingNode}");
-explodingNode.Reduce();
-Console.WriteLine($"Exploded:\t{explodingNode}");
+// // [[6,[5,[4,[3,2]]]],1] becomes [[6,[5,[7,0]]],3]
+// explodingNode = new Node(new Node(6, new Node(5, new Node(4, new Node(3, 2)))), 1);
+// Console.WriteLine($"Exploding:\t{explodingNode}");
+// explodingNode.Reduce();
+// Console.WriteLine($"Exploded:\t{explodingNode}");
 
-//[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] 
-//(the pair [3,2] is unaffected because the pair [7,3] is further to the left; 
-// [3,2] would explode on the next action).
-// [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[7,0]]]].
-explodingNode = new Node(new Node(3, new Node(2, new Node(1, new Node(7, 3)))), new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
-Console.WriteLine($"Exploding:\t{explodingNode}");
-explodingNode.Reduce();
-Console.WriteLine($"Exploded:\t{explodingNode}");
+// //[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] 
+// //(the pair [3,2] is unaffected because the pair [7,3] is further to the left; 
+// // [3,2] would explode on the next action).
+// // [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]] becomes [[3,[2,[8,0]]],[9,[5,[7,0]]]].
+// explodingNode = new Node(new Node(3, new Node(2, new Node(1, new Node(7, 3)))), new Node(6, new Node(5, new Node(4, new Node(3, 2)))));
+// Console.WriteLine($"Exploding:\t{explodingNode}");
+// explodingNode.Reduce();
+// Console.WriteLine($"Exploded:\t{explodingNode}");
 
 public class Node
 {
@@ -81,9 +90,9 @@ public class Node
 
     public override string ToString()
     {
-        if(value != null) return $"{value}";
-        
-        return $"[{a},{b}]";    
+        if (value != null) return $"{value}";
+
+        return $"[{a},{b}]";
     }
 
     public void Reduce()
@@ -94,53 +103,35 @@ public class Node
 
     public void Explode(int depth)
     {
-        if(depth == 4)
+        if (depth == 4)
         {
             var isExploding = this.a?.value != null && this.b?.value != null;
 
-            if(isExploding)
+            if (isExploding)
             {
-                var root = this.parent.parent.parent.parent;
-                
                 int avalue = (int)(this.a.value);
                 int bvalue = (int)(this.b.value);
 
                 this.a = null;
                 this.b = null;
 
-                if(this.parent.a.value != null)
+                Console.WriteLine($"Source: {this}");
+                var leftNeighbour = this.NearestLeftNeighbour();
+                Console.WriteLine($"LeftNeighbour: {leftNeighbour}");
+                if (leftNeighbour != null)
                 {
-                    this.parent.a.value += avalue;
+                    leftNeighbour.a.value += avalue;
                 }
-                else if(this.parent.parent.a.value != null)
-                {
-                    this.parent.parent.a.value += avalue;
-                }
-                else if(this.parent.parent.parent.a.value != null)
-                {
-                    this.parent.parent.parent.a.value += avalue;
-                }
-                else if(this.parent.parent.parent.parent.a.value != null)
-                {
-                    this.parent.parent.parent.parent.a.value += avalue;
-                }
-                
-                if(this.parent.b.value != null)
-                {
-                    this.parent.b.value += bvalue;
-                }
-                else if(this.parent.parent.b.value != null)
-                {
-                    this.parent.parent.b.value += bvalue;
-                } 
-                else if(this.parent.parent.parent.b.value != null)
-                {
-                    this.parent.parent.parent.b.value += bvalue;
-                }
-                else if(this.parent.parent.parent.parent.b.value != null)
-                {
-                    this.parent.parent.parent.parent.b.value += bvalue;
-                }
+
+                var rightNeighbour = this.NearestRightNeighbour();
+                Console.WriteLine($"RightNeighbour: {rightNeighbour}");
+                // Console.WriteLine($"This: {this}");
+                // Console.WriteLine($"RightNeighbour: {rightNeighbour}");
+                // if (rightNeighbour != null)
+                // {
+                //     rightNeighbour.b.value += bvalue;
+                // }
+
 
                 this.value = 0;
             }
@@ -150,9 +141,34 @@ public class Node
         b?.Explode(depth + 1);
     }
 
-    Node? parent;
-    Node? a;
-    Node? b;
 
-    int? value;
+
+    public Node? parent;
+    public Node? a;
+    public Node? b;
+
+    public int? value;
+}
+
+public static class NodeExtensions
+{
+    public static Node? NearestRightNeighbour(this Node source, Node? node = null)
+    {
+        node ??= source;
+
+        if (node.parent == null && node.value == null)
+            return null;
+
+        return node.parent.b;
+    }
+
+    public static Node? NearestLeftNeighbour(this Node source, Node? node = null)
+    {
+        node ??= source;
+
+        if (node.parent.a != null && node.parent.a != source)
+            return node.parent.a;
+
+        return null;
+    }
 }
