@@ -1,28 +1,28 @@
 ﻿using System.Text.RegularExpressions;
 
-// var input = File.ReadLines("test-input1.txt");
+Node node, node1, node2, result, foo;
 
-// var firstNode = ParseToNode(input.First());
-// return;
+//var input = File.ReadLines("test-input1.txt");
+
+//var firstNode = ParseToNode(input.First());
+var firstNode = ParseToNode("[[1,[2,3]");
+Console.WriteLine($"FirstNode: {firstNode}");
+return;
 // foreach(var line in input.Skip(1))
 // {
 
 // }
 
-string a = "[1,[2,3]]";
-var node = 
-Console.WriteLine(ParseToNode(a));
-return;
 
 // For example, [1,2] + [[3,4],5] becomes [[1,2],[[3,4],5]]
-Node node1 = new Node(1, 2);
-Node node2 = new Node(new Node(3, 4), 5);
+node1 = new Node(1, 2);
+node2 = new Node(new Node(3, 4), 5);
 
-Node result = node1 + node2;
+result = node1 + node2;
 Console.WriteLine($"Addition: {node1} + {node2} = {result}");
 Console.WriteLine();
 
-Node foo = new Node(1, new Node(2, 3));
+foo = new Node(1, new Node(2, 3));
 Console.WriteLine($"Foo: {foo}: {foo.a} leftnode: {foo.a.NearestLeftNeighbour()}");
 Console.WriteLine($"Foo: {foo}: {foo.b.a} leftnode: {foo.b.a.NearestLeftNeighbour()}");
 Console.WriteLine($"Foo: {foo}: {foo.b.b} leftnode: {foo.b.b.NearestLeftNeighbour()}");
@@ -117,7 +117,7 @@ Console.WriteLine($"Reduced: {result}");
 // [3,3]
 // [4,4]
 // [[[[1,1],[2,2]],[3,3]],[4,4]]
-var node = new Node(1, 1) + new Node(2, 2);
+node = new Node(1, 1) + new Node(2, 2);
 node.Reduce();
 node += new Node(3, 3);
 node.Reduce();
@@ -171,74 +171,75 @@ Console.WriteLine();
 
 Node ParseToNode(string line)
 {
-    // [1,[2,3]]
+    Node? currentNode = null;
 
-    Node root = new Node();
     bool firstValue = false;
     bool secondValue = false;
-    foreach(var c in line)
+
+    foreach (var c in line)
     {
-        if(c == '[') 
+        if (c == '[')
         {
-            if(root != null)
+            if (firstValue)
             {
-                if(firstValue)
-                {
-                    root.a = new Node();
-                    root = root.a;
-                    continue;
-                }
-
-                if(secondValue)
-                {
-                    root.b = new Node();
-                    root = root.b;
-                    continue;
-                }
-
-                throw new NotImplementedException();
+                currentNode.a = new Node();
+                currentNode.a.parent = currentNode;
+                currentNode = currentNode.a;
+                continue;
             }
-            
-            root = new Node();
+
+            if (secondValue)
+            {
+                currentNode.b = new Node();
+                currentNode.b.parent = currentNode;
+                currentNode = currentNode.b;
+                continue;
+            }
+
+            currentNode = new Node();
             firstValue = true;
             continue;
         }
 
-        if(root != null && char.IsDigit(c))
+        if (char.IsDigit(c))
         {
-            if(firstValue)
+            if (firstValue)
             {
-                root.a = new Node(int.Parse(c.ToString()));
+                currentNode.a = new Node(int.Parse(c.ToString()));
                 firstValue = false;
                 continue;
             }
 
-            if(secondValue)
+            if (secondValue)
             {
-                root.b = new Node(int.Parse(c.ToString()));
+                currentNode.b = new Node(int.Parse(c.ToString()));
                 secondValue = false;
                 continue;
             }
+
+            throw new NotImplementedException();
         }
 
-        if(c == ',')
+
+        if (c == ',')
         {
             secondValue = true;
             continue;
         }
 
-        if(c == ']')
+        if (c == ']')
         {
-            Console.WriteLine($"End of node: {node}");
+            currentNode = currentNode?.parent ?? currentNode;
+            continue;
         }
     }
 
-    return null;
+    return currentNode;
 }
 
 public class Node
 {
-    public Node() {}
+    public Node() { }
     public Node(int a, int b)
     {
         this.a = new Node(a);
@@ -295,9 +296,9 @@ public class Node
         do
         {
             active = false;
-            if(Explode(0)) active = true;
-            if(Split(0)) active = true;
-        } while(active);
+            if (Explode(0)) active = true;
+            if (Split(0)) active = true;
+        } while (active);
     }
 
     public bool Explode(int depth)
@@ -311,7 +312,7 @@ public class Node
             {
                 int avalue = (int)(this.a.value);
                 int bvalue = (int)(this.b.value);
-                
+
                 var leftNeighbour = this.NearestLeftNeighbour();
                 if (leftNeighbour != null)
                 {
@@ -327,12 +328,12 @@ public class Node
                 this.a = null;
                 this.b = null;
                 this.value = 0;
-                result =  true;
+                result = true;
             }
         }
 
-        if(a?.Explode(depth + 1) ?? false) result = true;
-        if(b?.Explode(depth + 1) ?? false) result = true;
+        if (a?.Explode(depth + 1) ?? false) result = true;
+        if (b?.Explode(depth + 1) ?? false) result = true;
 
         return result;
     }
@@ -341,16 +342,16 @@ public class Node
     {
         bool result = false;
 
-        if(this.value > 9)
+        if (this.value > 9)
         {
-            this.a = new Node((int)Math.Floor((float)this.value/2.0f));
-            this.b = new Node((int)Math.Ceiling((float)this.value/2.0f));
+            this.a = new Node((int)Math.Floor((float)this.value / 2.0f));
+            this.b = new Node((int)Math.Ceiling((float)this.value / 2.0f));
             this.value = null;
             return true;
         }
 
-        if(a?.Split(depth + 1) ?? false) result = true;
-        if(b?.Split(depth + 1) ?? false) result = true;
+        if (a?.Split(depth + 1) ?? false) result = true;
+        if (b?.Split(depth + 1) ?? false) result = true;
 
         return result = false;
     }
@@ -368,35 +369,35 @@ public static class NodeExtensions
 {
     public static Node? LeftValueNode(this Node source)
     {
-        if(source.value != null) return source;
-        if(source.a.value != null) return source.a;
-        if(source.a != null) return LeftValueNode(source.a);
-        if(source.b != null) return LeftValueNode(source.b);
+        if (source.value != null) return source;
+        if (source.a.value != null) return source.a;
+        if (source.a != null) return LeftValueNode(source.a);
+        if (source.b != null) return LeftValueNode(source.b);
 
         throw new NotImplementedException();
     }
 
     public static Node? RightValueNode(this Node source)
     {
-        if(source.value != null) return source;
-        if(source.b.value != null) return source.b;
-        if(source.b != null) return RightValueNode(source.b);
-        if(source.a != null) return RightValueNode(source.a);
+        if (source.value != null) return source;
+        if (source.b.value != null) return source.b;
+        if (source.b != null) return RightValueNode(source.b);
+        if (source.a != null) return RightValueNode(source.a);
 
         throw new NotImplementedException();
     }
 
     public static Node? NearestRightNeighbour(this Node source, Node? node = null)
     {
-        if(source?.parent != null) 
+        if (source?.parent != null)
         {
-            if(source.parent.b.value != null && source.parent.b != source)
+            if (source.parent.b.value != null && source.parent.b != source)
                 return source.parent.b;
 
-            if(source.parent.b.value == null && source.parent.b != source)
+            if (source.parent.b.value == null && source.parent.b != source)
                 return source.parent.b.LeftValueNode();
 
-            if(source.parent.b == source)
+            if (source.parent.b == source)
                 return source.parent.NearestRightNeighbour();
         }
 
@@ -405,18 +406,25 @@ public static class NodeExtensions
 
     public static Node? NearestLeftNeighbour(this Node source)
     {
-        if(source?.parent != null) 
+        if (source?.parent != null)
         {
-            if(source.parent.a.value != null && source.parent.a != source)
+            if (source.parent.a.value != null && source.parent.a != source)
                 return source.parent.a;
 
-            if(source.parent.a.value == null && source.parent.a != source)
+            if (source.parent.a.value == null && source.parent.a != source)
                 return source.parent.a.RightValueNode();
 
-            if(source.parent.a == source)
+            if (source.parent.a == source)
                 return source.parent.NearestLeftNeighbour();
         }
 
         return null;
+    }
+
+    public static Node GetRoot(this Node source)
+    {
+        if (source.parent == null) return source;
+
+        return GetRoot(source.parent);
     }
 }
