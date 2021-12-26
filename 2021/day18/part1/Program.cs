@@ -2,17 +2,23 @@
 
 Node node, node1, node2, result, foo;
 
-//var input = File.ReadLines("test-input1.txt");
+var input = File.ReadLines("input.txt");
 
-//var firstNode = ParseToNode(input.First());
-var firstNode = ParseToNode("[[1,[2,3]");
-Console.WriteLine($"FirstNode: {firstNode}");
+var firstNode = ParseToNode(input.First());
+foreach(var line in input.Skip(1))
+{
+    var secondNode = ParseToNode(line);
+
+    Console.WriteLine($"\t{firstNode}");
+    Console.WriteLine($"+\t{secondNode}");
+    firstNode += secondNode;
+    firstNode.Reduce();
+    Console.WriteLine($"\t{firstNode}");
+    Console.WriteLine();
+}
+
+Console.WriteLine($"Magnitude: {firstNode.Magnitude()}");
 return;
-// foreach(var line in input.Skip(1))
-// {
-
-// }
-
 
 // For example, [1,2] + [[3,4],5] becomes [[1,2],[[3,4],5]]
 node1 = new Node(1, 2);
@@ -193,6 +199,8 @@ Node ParseToNode(string line)
                 currentNode.b = new Node();
                 currentNode.b.parent = currentNode;
                 currentNode = currentNode.b;
+                firstValue = true;
+                secondValue = false;
                 continue;
             }
 
@@ -206,6 +214,7 @@ Node ParseToNode(string line)
             if (firstValue)
             {
                 currentNode.a = new Node(int.Parse(c.ToString()));
+                currentNode.a.parent = currentNode;
                 firstValue = false;
                 continue;
             }
@@ -213,6 +222,7 @@ Node ParseToNode(string line)
             if (secondValue)
             {
                 currentNode.b = new Node(int.Parse(c.ToString()));
+                currentNode.b.parent = currentNode;
                 secondValue = false;
                 continue;
             }
@@ -291,20 +301,27 @@ public class Node
 
     public void Reduce()
     {
+        // Console.WriteLine($"Before reduce:\t{this}");
         bool active = false;
-        int counter = 0;
         do
         {
             active = false;
-            if (Explode(0)) active = true;
-            if (Split(0)) active = true;
+            while(Explode(0))
+            {
+                // Console.WriteLine($"After explode:\t{this}");
+                active = true;
+            } 
+            if(Split(0))
+            {
+                active = true;
+                // Console.WriteLine($"After split:\t{this}");
+            }
         } while (active);
     }
 
     public bool Explode(int depth)
     {
-        bool result = false;
-        if (depth == 4)
+        if (depth >= 4)
         {
             var isExploding = this.a?.value != null && this.b?.value != null;
 
@@ -328,14 +345,14 @@ public class Node
                 this.a = null;
                 this.b = null;
                 this.value = 0;
-                result = true;
+                return true;
             }
         }
 
-        if (a?.Explode(depth + 1) ?? false) result = true;
-        if (b?.Explode(depth + 1) ?? false) result = true;
+        if (a?.Explode(depth + 1) ?? false) return true;
+        if (b?.Explode(depth + 1) ?? false) return true;
 
-        return result;
+        return false;
     }
 
     public bool Split(int depth)
@@ -345,18 +362,28 @@ public class Node
         if (this.value > 9)
         {
             this.a = new Node((int)Math.Floor((float)this.value / 2.0f));
+            this.a.parent = this;
             this.b = new Node((int)Math.Ceiling((float)this.value / 2.0f));
+            this.b.parent = this;
             this.value = null;
             return true;
         }
 
-        if (a?.Split(depth + 1) ?? false) result = true;
-        if (b?.Split(depth + 1) ?? false) result = true;
+        if (a?.Split(depth + 1) ?? false) return true;
+        if (b?.Split(depth + 1) ?? false) return true;
 
-        return result = false;
+        return false;
     }
 
+    public int Magnitude()
+    {
+        if(this.a == null && this.b == null)
+            return this.value!.Value;
 
+        // [1,2]
+        // 3 * a + 2 * b
+        return 3 * this.a.Magnitude() + 2 * this.b.Magnitude(); 
+    }
 
     public Node? parent;
     public Node? a;
