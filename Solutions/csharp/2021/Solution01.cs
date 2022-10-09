@@ -1,6 +1,6 @@
 using AdventOfCode;
 
-namespace Solutions.y2021d01;
+namespace Solutions.Y2021;
 
 [Solution(2021, 1)]
 public class Solution01
