@@ -1,4 +1,4 @@
-package main
+package adventofcode
 
 import (
 	"bufio"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func main() {
+func Solve() {
 	filename := os.Args[1]
 	file, err := os.Open(filename)
 

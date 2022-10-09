@@ -1,37 +1,25 @@
-package main
+package adventofcode
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
-func main() {
+func Solve() {
 	filename := os.Args[1]
-	file, err := os.Open(filename)
+	data, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		fmt.Println("Error encountered")
 		return
 	}
 
-	fileScanner := bufio.NewScanner(file)
-	fileScanner.Split(bufio.ScanLines)
+	dict := make(map[byte]int)
 
-	var floor int
-
-	for fileScanner.Scan() {
-		line := fileScanner.Text()
-		for i := 0; i < len(line); i++ {
-			if line[i] == '(' {
-				floor += 1
-			} else {
-				floor -= 1
-			}
-		}
+	for _, c := range data {
+		dict[c] = dict[c] + 1
 	}
 
-	fmt.Printf("Santa is on the %dth floor.\n", floor)
-
-	file.Close()
+	fmt.Printf("Santa is on the %dth floor.\n", dict['(']-dict[')'])
 }
