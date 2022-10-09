@@ -58,7 +58,7 @@ var part2Method = solutionType.GetMethods()
 
 if (part2Method == null)
 {
-    Console.WriteLine($"Part1 is not defined for {year}/{day}");
+    Console.WriteLine($"Part2 is not defined for {year}/{day}");
     return;
 }
 
