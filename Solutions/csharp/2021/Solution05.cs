@@ -2,23 +2,38 @@
 using System.Linq;
 using System.Collections.Generic;
 
-var lines = File.ReadAllLines("input.txt")
-    .Select(inputLine => 
+namespace AdventOfCode.Y2021;
+
+[Solution(2021, 5)]
+public class Solution05
+{
+    [Part1]
+    public void Part1(string filename)
     {
-        var parsedLine = inputLine.Split(" -> ");
-        return new Line
-        {
-            start = new Point(parsedLine[0]),
-            end = new Point(parsedLine[1])
-        };
-    })
-    //.Where(line => line.start.x == line.end.x || line.start.y == line.end.y)
-    .ToArray();
+        var lines = File.ReadAllLines(filename)
+            .Select(inputLine => 
+            {
+                var parsedLine = inputLine.Split(" -> ");
+                return new Line
+                {
+                    start = new Point(parsedLine[0]),
+                    end = new Point(parsedLine[1])
+                };
+            })
+            //.Where(line => line.start.x == line.end.x || line.start.y == line.end.y)
+            .ToArray();
 
-var groupedLines = lines.SelectMany(line => line.Range()).GroupBy(x => x);
+        var groupedLines = lines.SelectMany(line => line.Range()).GroupBy(x => x);
 
-Console.WriteLine($"Dangerous spots: {groupedLines.Count(x => x.Count() > 1)}");
+        Console.WriteLine($"Dangerous spots: {groupedLines.Count(x => x.Count() > 1)}");
+    }
 
+    [Part2]
+    public void Part2(string filename)
+    {
+        Console.WriteLine("No answer");
+    }
+}
 public struct Point
 {
     public Point(int x, int y) => (this.x, this.y) = (x, y);
