@@ -13,6 +13,7 @@ enum SupportedLanguages
     fsharp
     javascript
     c
+    java
 }
 
 if ([enum]::isDefined(([SupportedLanguages]), $language)) 
