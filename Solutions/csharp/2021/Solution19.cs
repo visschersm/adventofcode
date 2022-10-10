@@ -33,7 +33,8 @@ public class Solution19
 
         }
 
-        public record Scanner(int x, int y, int z);
-        public record Beacon(int x, int y, int z);
     }
+    
+    public record Scanner(int x, int y, int z);
+    public record Beacon(int x, int y, int z);
 }
