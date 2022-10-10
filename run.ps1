@@ -8,6 +8,10 @@ enum SupportedLanguages
 {
     csharp
     python
+}
+
+enum NotSupportedLanguages
+{
     go
     rust
     fsharp
@@ -19,6 +23,12 @@ enum SupportedLanguages
 if ([enum]::isDefined(([SupportedLanguages]), $language)) 
 {
     Write-Host "Language `"$language`" is supported"
+}
+
+if ([enum]::isDefined(([NotSupportedLanguages]), $language)) 
+{
+    Write-Host "Language `"$language`" is not (yet) supported"
+    return
 }
 
 Write-Host "Solve for $date in `"$language`", call `"solve_$language.ps1`""
