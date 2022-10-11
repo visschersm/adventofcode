@@ -12,16 +12,21 @@ public class Solution01
         var increasedCounter = 0;
 
         var previousMeasurement = measurements.First();
-        Console.WriteLine($"{previousMeasurement} (N/A - no previous measurement)");
 
+        var result = measurements.Aggregate((previous, current) =>
+        {
+            increasedCounter += previous > current ? 1 : 0;
+            return increasedCounter;
+        });
+        
         foreach (var meassurement in measurements.Skip(1))
         {
             var increased = meassurement > previousMeasurement;
-            Console.WriteLine($"{meassurement} ({(increased ? "increased" : "decreased")})");
             if (increased) increasedCounter++;
             previousMeasurement = meassurement;
         }
 
+        Console.WriteLine($"Aggregate result: {result}");
         Console.WriteLine($"increasedCounter: {increasedCounter}");
     }
 
@@ -32,14 +37,12 @@ public class Solution01
         var increasedCounter = 0;
 
         var previousMeasurement = measurements.Skip(0).Take(3).Sum();
-        Console.WriteLine($"{previousMeasurement} (N/A - no previous measurement)");
 
         for (int i = 1; i < measurements.Count() - 2; ++i)
         {
             var meassurementWindow = measurements.Skip(i).Take(3);
             var meassurement = meassurementWindow.Sum();
             var increased = meassurement > previousMeasurement;
-            Console.WriteLine($"{string.Join(", ", meassurementWindow)} - {meassurement} ({(increased ? "increased" : "decreased")})");
             if (increased) increasedCounter++;
             previousMeasurement = meassurement;
         }

@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace AdventOfCode.Y2015;
 
 [Solution(2015, 2)]
@@ -6,46 +8,47 @@ public class Solution02
     [Part1]
     public void Part1(string filename)
     {
-        var data = File.ReadAllLines(filename).Select(line => 
-        {
-            // lxwxh
-            var splitted = line.Split("x");
-            return new Dimensions 
-            {
-                l = int.Parse(splitted[0]),
-                w = int.Parse(splitted[1]),
-                h = int.Parse(splitted[2])
-            };
-        });
-
-        int total = 0;
-        foreach(var gift in data)
-        {
-            var minSide = min(min(gift.l * gift.w, gift.w * gift.h), gift.h * gift.l);
-            total += surface(gift) + minSide;
-        }
-
+        var data = File.ReadAllLines(filename).Select(line => new Dimensions(line));
+        int total = data.Sum(gift => gift.Surface() + gift.MinSurface());
+        
         Console.WriteLine(total);
-        int surface(Dimensions gift)
-        {
-            return 2*gift.l*gift.w + 2*gift.w*gift.h + 2*gift.h*gift.l;
-        }
+        
     }
 
     [Part2]
     public void Part2(string filename)
     {
-
+        var data = File.ReadAllLines(filename).Select(line => new Dimensions(line));
+        var total = data.Sum(gift =>
+        {
+            return new[] { gift.l, gift.w, gift.h }.Order().Take(2).Sum(x => x * 2) + gift.Cubed();
+        });
+        Console.WriteLine($"Ribbon needed: {total}");
     }
 
-    T min<T>(T a, T b)
-        where T : IComparable<T>
+    private record struct Dimensions
     {
-        return a.CompareTo(b) < 0 ? a : b;
-    }
+        public Dimensions(string dimensions)
+        {
+            var splitted = dimensions.Split("x");
+            l = int.Parse(splitted[0]);
+            w = int.Parse(splitted[1]);
+            h = int.Parse(splitted[2]);
+        } 
 
-    private struct Dimensions
-    {
         public int l, w, h;
+        public int MinSurface() => Math.Min(Math.Min(l * w, w * h), h * l);
+        public int Surface() => 2 * l * w + 2 * w * h + 2 * h * l;
+        public int Cubed() => l * w * h;
+        public (int, int) ShortestPerimeter()
+        {
+            //new[] {l, w, h}.Order().Take(2);
+            var v1 = l * w;
+            var v2 = w * h;
+            var v3 = h * l;
+
+            var faces = new[] { v1, v2, v3 };
+            return (faces.Order().Take(1).Single(), faces.Order().Skip(1).Take(1).Single());
+        }
     }
 }

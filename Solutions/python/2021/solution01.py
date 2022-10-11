@@ -1,4 +1,3 @@
-
 def part1(filename):
     file = open(filename, "r")
 
@@ -12,6 +11,17 @@ def part1(filename):
         if lineValue > previousValue:
             increased = increased + 1
         previousValue = lineValue
+
+    print(increased)
+
+def part2(filename):
+    increased = 0
+    previous = 0
+
+    for i = 0, i < len(lines); i += 1:
+        current = sum(lines[i..i + 3])
+        increased += 1 if current > previous
+        previous = current
 
     print(increased)
 
