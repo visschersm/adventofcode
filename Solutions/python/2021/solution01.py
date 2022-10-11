@@ -1,27 +1,20 @@
-def part1(filename):
-    file = open(filename, "r")
+from util.filereader import *
 
+def part1(input_file):
     increased = 0
-    firstLine = file.readline()
-    previousValue = int(firstLine)
+    lines = [int(numeric_string) for numeric_string in input_file.readlines()]
 
-    lines = file.readlines()
-    for line in lines:
-        lineValue = int(line)
-        if lineValue > previousValue:
-            increased = increased + 1
-        previousValue = lineValue
+    for index, line in enumerate(lines[1:]):
+        increased += 1 if line > lines[index] else 0
 
     print(increased)
 
-def part2(filename):
+def part2(input_file):
     increased = 0
-    previous = 0
-
-    for i = 0, i < len(lines); i += 1:
-        current = sum(lines[i..i + 3])
-        increased += 1 if current > previous
-        previous = current
+    lines = [int(numeric_string) for numeric_string in input_file.readlines()]
+    
+    for index in range(0, len(lines) - 3):
+        increased += 1 if sum(lines[index + 1:index + 4]) > sum(lines[index:index+3]) else 0
 
     print(increased)
 
