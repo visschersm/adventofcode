@@ -8,26 +8,17 @@ public class Solution01
     [Part1]
     public void Part1(string filename)
     {
-        var measurements = File.ReadAllLines(filename).Select(x => int.Parse(x));
-        var increasedCounter = 0;
+        var measurements = File.ReadAllLines(filename).Select(x => int.Parse(x));//.ToArray();
 
-        var previousMeasurement = measurements.First();
-
-        var result = measurements.Aggregate((previous, current) =>
+        var current = measurements.First(); 
+        var result = measurements.Skip(1).Aggregate(0, (result, next) => 
         {
-            increasedCounter += previous > current ? 1 : 0;
-            return increasedCounter;
+            result += next > current ? 1 : 0;
+            current = next;
+            return result;
         });
         
-        foreach (var meassurement in measurements.Skip(1))
-        {
-            var increased = meassurement > previousMeasurement;
-            if (increased) increasedCounter++;
-            previousMeasurement = meassurement;
-        }
-
-        Console.WriteLine($"Aggregate result: {result}");
-        Console.WriteLine($"increasedCounter: {increasedCounter}");
+        Console.WriteLine($"The amount of meassurments larger: {result}");
     }
 
     [Part2]

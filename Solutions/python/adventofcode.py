@@ -42,7 +42,13 @@ def main(argumentList):
 
     __import__(module_name)
     mymodule = sys.modules[module_name]
-    mymodule.solve(input)
+
+    with open(input, 'r') as input_file:
+        print("Answer part1:")
+        mymodule.part1(input_file)
+        input_file.seek(0,0)
+        print("Answer part2:")
+        mymodule.part2(input_file)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
