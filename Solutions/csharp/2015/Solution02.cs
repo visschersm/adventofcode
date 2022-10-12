@@ -11,7 +11,7 @@ public class Solution02
         var data = File.ReadAllLines(filename).Select(line => new Dimensions(line));
         int total = data.Sum(gift => gift.Surface() + gift.MinSurface());
         
-        Console.WriteLine(total);
+        Console.WriteLine($"The elves need to order \"{total}\" square feet of wrapping paper");
         
     }
 
@@ -23,7 +23,7 @@ public class Solution02
         {
             return new[] { gift.l, gift.w, gift.h }.Order().Take(2).Sum(x => x * 2) + gift.Cubed();
         });
-        Console.WriteLine($"Ribbon needed: {total}");
+        Console.WriteLine($"The elves need to order \"{total}\" feet of ribbon.");
     }
 
     private record struct Dimensions

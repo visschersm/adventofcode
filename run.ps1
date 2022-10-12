@@ -1,6 +1,7 @@
 param (
     [Parameter(mandatory)][string][Alias("l")]$language, 
-    [Parameter(mandatory)][string][Alias("d")]$date
+    [Parameter(mandatory)][string][Alias("d")]$date,
+    [string][Alias("i")]$input_file
     )
 
 
@@ -33,4 +34,4 @@ if ([enum]::isDefined(([NotSupportedLanguages]), $language))
 
 Write-Host "Solve for $date in `"$language`", call `"solve_$language.ps1`""
 . scripts\solve_$language.ps1
-Solve -d $date
+Solve -d $date -i $input_file

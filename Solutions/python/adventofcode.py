@@ -2,9 +2,10 @@ import sys, getopt
 
 def main(argumentList):
     date = ""
+    overrideFile = None
 
-    options = "hd:"
-    long_options = ["help", "date="]
+    options = "hid"
+    long_options = ["help", "date=", "input_file="]
 
     try:
         arguments, values = getopt.getopt(argumentList, options, long_options)
@@ -21,6 +22,10 @@ def main(argumentList):
                 print ("Date provided:", currentValue)
                 date = currentValue
             
+            elif currentArgument in ("-i", "--input_file"):
+                print ("File provided:", currentValue)
+                overrideFile = currentValue
+            
     except getopt.error as err:
         print (str(err))
 
@@ -35,6 +40,9 @@ def main(argumentList):
     print("Date parsed:", str(year), strNum)
 
     input = "Inputs/" + str(year) + "/" + strNum + ".txt"
+    if overrideFile is not None:
+        input = overrideFile
+
     print("InputFile:", input)
 
     module_name = str(year) + ".solution" + strNum

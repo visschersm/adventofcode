@@ -1,8 +1,16 @@
 Function Solve {
     Param (
-        [Parameter(mandatory)][string][Alias("d")]$date
+        [Parameter(mandatory)][string][Alias("d")]$date,
+        [string][Alias("i")]$input_file
     )
     Process {
-        dotnet run --project .\Solutions\csharp\adventofcode.csproj -- $date 
+        if($input_file)
+        {
+            dotnet run --project .\Solutions\csharp\adventofcode.csproj -- $date $input_file
+        }
+        else 
+        {
+            dotnet run --project .\Solutions\csharp\adventofcode.csproj -- $date 
+        }
     }
 }
