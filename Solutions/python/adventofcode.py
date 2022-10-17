@@ -13,17 +13,13 @@ def main(argumentList):
         # checking each argument
         for currentArgument, currentValue in arguments:
     
-            print("CurrentArgument:", currentArgument, "CurrentValue:", currentValue)
-
             if currentArgument in ("-h", "--Help"):
                 print ("Displaying Help")
                 
             elif currentArgument in ("-d", "--date"):
-                print ("Date provided:", currentValue)
                 date = currentValue
             
             elif currentArgument in ("-i", "--input_file"):
-                print ("File provided:", currentValue)
                 overrideFile = currentValue
             
     except getopt.error as err:
@@ -37,16 +33,11 @@ def main(argumentList):
     strNum = str(day)
     strNum = strNum.rjust(2, '0')
 
-    print("Date parsed:", str(year), strNum)
-
     input = "Inputs/" + str(year) + "/" + strNum + ".txt"
     if overrideFile is not None:
         input = overrideFile
 
-    print("InputFile:", input)
-
     module_name = str(year) + ".solution" + strNum
-    print("ModuleName:", module_name)
 
     __import__(module_name)
     mymodule = sys.modules[module_name]
