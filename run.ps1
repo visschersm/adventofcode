@@ -21,10 +21,10 @@ enum NotSupportedLanguages
     java
 }
 
-if ([enum]::isDefined(([SupportedLanguages]), $language)) 
-{
-    Write-Host "Language `"$language`" is supported"
-}
+# if ([enum]::isDefined(([SupportedLanguages]), $language)) 
+# {
+#     Write-Host "Language `"$language`" is supported"
+# }
 
 if ([enum]::isDefined(([NotSupportedLanguages]), $language)) 
 {

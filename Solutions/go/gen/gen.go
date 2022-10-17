@@ -85,8 +85,6 @@ func generate_code(dates []Date) {
 	defer file.Close()
 
 	write_code(file, dates)
-
-	fmt.Println("Data written to file successfully...")
 }
 
 func create_folder(directory string) {

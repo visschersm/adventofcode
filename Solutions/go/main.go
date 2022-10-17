@@ -29,11 +29,8 @@ func getInputFile(date string) string {
 	flag.Parse()
 
 	if input_file == nil || *input_file == "" {
-		fmt.Println("No input file provided, use default")
 		*input_file = fmt.Sprintf("Inputs/%d/%02d.txt", get_year(date), get_day(date))
 	}
-
-	fmt.Printf("Input file: %s\n", *input_file)
 
 	return *input_file
 }
@@ -70,13 +67,11 @@ func solveForDate(date string, filename string) {
 func get_year(date string) int {
 	splittedDate := strings.Split(date, "/")
 	year, _ := strconv.Atoi(splittedDate[0])
-	fmt.Printf("year: %d\n", year)
 	return year
 }
 
 func get_day(date string) int {
 	splittedDate := strings.Split(date, "/")
 	day, _ := strconv.Atoi(splittedDate[1])
-	fmt.Printf("day: %d\n", day)
 	return day
 }
