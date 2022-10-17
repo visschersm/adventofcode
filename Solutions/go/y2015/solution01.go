@@ -1,13 +1,32 @@
-package adventofcode
+package y2015
 
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
-func Solve() {
-	filename := os.Args[1]
+type Solution01 struct{}
+
+func (s *Solution01) Part1(filename string) {
+	data, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		fmt.Println("Error encountered")
+		return
+	}
+
+	dict := make(map[byte]int)
+
+	for _, c := range data {
+		dict[c] = dict[c] + 1
+	}
+
+	fmt.Printf("Santa is on the %dth floor.\n", dict['(']-dict[')'])
+}
+
+func (s *Solution01) Part2(filename string) {
 	file, err := os.Open(filename)
 
 	if err != nil {
@@ -38,7 +57,7 @@ func Solve() {
 		}
 	}
 
-	fmt.Printf("Santa found the basement after %d tries", tryCounter)
+	fmt.Printf("Santa found the basement after %d tries\n", tryCounter)
 
 	file.Close()
 }

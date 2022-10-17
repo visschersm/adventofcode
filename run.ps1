@@ -9,11 +9,11 @@ enum SupportedLanguages
 {
     csharp
     python
+    go
 }
 
 enum NotSupportedLanguages
 {
-    go
     rust
     fsharp
     javascript

@@ -1,17 +1,17 @@
 package main
 
 import (
+	"adventofcode/lib"
+	"adventofcode/registration"
+	"flag"
 	"fmt"
-	"os"
-	"reflect"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
-var dateValidation *regexp.Regexp = nil
-
+//go:generate go run gen/gen.go
 func main() {
-	dateValidation = regexp.MustCompile(`((19|20)\d\d)/(0?[1-9]|1[012])`)
-
 	date := getDate()
 
 	if date == nil {
@@ -19,27 +19,64 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Provided date: %s", *date)
+	input_file := getInputFile(*date)
+
+	solveForDate(*date, input_file)
+}
+
+func getInputFile(date string) string {
+	input_file := flag.String("input_file", "", "")
+	flag.Parse()
+
+	if input_file == nil || *input_file == "" {
+		fmt.Println("No input file provided, use default")
+		*input_file = fmt.Sprintf("Inputs/%d/%02d.txt", get_year(date), get_day(date))
+	}
+
+	fmt.Printf("Input file: %s\n", *input_file)
+
+	return *input_file
 }
 
 func getDate() *string {
-	argumentsAmount := len(os.Args)
-	if argumentsAmount <= 1 {
+	date := flag.String("date", "", "")
+	flag.Parse()
+
+	if date == nil {
+		fmt.Println("No date provided")
 		return nil
 	}
 
-	date := os.Args[1]
+	dateValidation := regexp.MustCompile(`((19|20)\d\d)/(0?[1-9]|1[012])`)
 
-	if !dateValidation.MatchString(date) {
+	if !dateValidation.MatchString(*date) {
 		fmt.Println("Provided date not valid")
 		return nil
 	}
 
-	return &date
+	return date
 }
 
-func solveForDate(string date) {
-	method := reflect.MethodByName("Solve")
-	answer = method.Call()
-	fmt.Println(answer)
+func solve(s lib.Solution, filename string) {
+	s.Part1(filename)
+	s.Part2(filename)
+}
+
+func solveForDate(date string, filename string) {
+	s := registration.GetSolution(get_year(date), get_day(date))
+	solve(s, filename)
+}
+
+func get_year(date string) int {
+	splittedDate := strings.Split(date, "/")
+	year, _ := strconv.Atoi(splittedDate[0])
+	fmt.Printf("year: %d\n", year)
+	return year
+}
+
+func get_day(date string) int {
+	splittedDate := strings.Split(date, "/")
+	day, _ := strconv.Atoi(splittedDate[1])
+	fmt.Printf("day: %d\n", day)
+	return day
 }

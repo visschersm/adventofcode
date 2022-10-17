@@ -1,3 +1,3 @@
-module adventofcode/2015/01
+module adventofcode
 
 go 1.19
