@@ -50,7 +50,7 @@ func commands() {
 func get_available_languages() []string {
 	var result []string
 
-	folders, err := os.ReadDir("../Solutions")
+	folders, err := os.ReadDir("Solutions")
 
 	if err != nil {
 		log.Fatal(err)
