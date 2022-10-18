@@ -1,3 +1,6 @@
 go 1.19
 
-use ./Solutions/go
+use (
+	./Solutions/go
+	./cli
+)
