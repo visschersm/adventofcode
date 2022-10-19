@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc_cli/util"
 	"bufio"
 	"fmt"
 	"log"
@@ -8,16 +9,16 @@ import (
 	"strings"
 )
 
-func CreateCodeFile(language Language, date Date) error {
-	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.name)
+func CreateCodeFile(language util.Language, date util.Date) error {
+	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	if !fileExists(templateFile) {
 		log.Fatal("Template file does not exist: ", templateFile)
 	}
 
-	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.name, date.year)
+	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.Name, date.Year)
 	generate_path(yearFolderPath)
 
-	fullpath := fmt.Sprintf("%s/solution%02d%s", yearFolderPath, date.day, language.ext)
+	fullpath := fmt.Sprintf("%s/solution%02d%s", yearFolderPath, date.Day, language.Ext)
 	fmt.Printf("Fullpath: %s\n", fullpath)
 
 	if fileExists(fullpath) {
@@ -61,11 +62,11 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func generate_code(language Language, date Date) string {
-	fmt.Printf("Generating code for: %s\n", language.name)
+func generate_code(language util.Language, date util.Date) string {
+	fmt.Printf("Generating code for: %s\n", language.Name)
 	var code string
 
-	templatePath := fmt.Sprintf("Templates/%s.tmpl", language.name)
+	templatePath := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	fmt.Printf("Opening template: %s\n", templatePath)
 	template, err := os.Open(templatePath)
 
@@ -87,10 +88,10 @@ func generate_code(language Language, date Date) string {
 		code += line + "\n"
 	}
 
-	code = strings.Replace(code, "<iyear>", fmt.Sprintf("%d", date.year), -1)
-	code = strings.Replace(code, "<iday>", fmt.Sprintf("%d", date.day), -1)
-	code = strings.Replace(code, "<year>", fmt.Sprintf("%d", date.year), -1)
-	code = strings.Replace(code, "<day>", fmt.Sprintf("%02d", date.day), -1)
+	code = strings.Replace(code, "<iyear>", fmt.Sprintf("%d", date.Year), -1)
+	code = strings.Replace(code, "<iday>", fmt.Sprintf("%d", date.Day), -1)
+	code = strings.Replace(code, "<year>", fmt.Sprintf("%d", date.Year), -1)
+	code = strings.Replace(code, "<day>", fmt.Sprintf("%02d", date.Day), -1)
 
 	fmt.Printf("Generated code:\n%s\n", code)
 	return code

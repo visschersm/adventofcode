@@ -1,6 +1,8 @@
 package main
 
 import (
+	"aoc_cli/runners"
+	"aoc_cli/util"
 	"fmt"
 	"log"
 	"math/rand"
@@ -14,14 +16,6 @@ import (
 
 var app = cli.NewApp()
 
-var minYear = 2015
-var maxYear = 2022
-var minDay = 1
-var maxDay = 25
-
-var supportedYears []int
-var supportedDays []int
-
 func main() {
 
 	info()
@@ -33,17 +27,6 @@ func main() {
 	}
 }
 
-func init() {
-	fmt.Println("Init called")
-	for i := minYear; i <= maxYear; i++ {
-		supportedYears = append(supportedYears, i)
-	}
-
-	for i := minDay; i <= maxDay; i++ {
-		supportedDays = append(supportedDays, i)
-	}
-}
-
 func info() {
 	app.Name = "AdventOfCode CLI"
 	app.Usage = "Tool to generate solutions files"
@@ -51,13 +34,14 @@ func info() {
 }
 
 func commands() {
+	availableLanguages := util.GetAvailableLanguages()
+
 	app.Commands = []*cli.Command{
 		{
 			Name:    "random",
 			Aliases: []string{"r"},
 			Usage:   "Ask for random language",
 			Action: func(c *cli.Context) error {
-				availableLanguages := get_available_languages()
 				rand.Seed(time.Now().UnixNano())
 				min := 1
 				max := len(availableLanguages)
@@ -71,7 +55,6 @@ func commands() {
 			Aliases: []string{"g"},
 			Usage:   "Generate Solution file for language",
 			Action: func(c *cli.Context) error {
-				availableLanguages := get_available_languages()
 				languageName := c.Args().First()
 
 				if languageName == "" {
@@ -85,8 +68,57 @@ func commands() {
 					return nil
 				}
 
-				language := ConvertLanguage(languageName)
+				language := util.ConvertLanguage(languageName)
 				generate_code_file(language)
+
+				return nil
+			},
+		},
+		{
+			Name:  "run",
+			Usage: "Solve a challenge for a specific language",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "language",
+					Usage:   "language to generate solution in",
+					Aliases: []string{"l"},
+				},
+				&cli.StringFlag{
+					Name:    "date",
+					Usage:   "date to generate solution for",
+					Aliases: []string{"d"},
+				},
+				&cli.StringFlag{
+					Name:  "input_file",
+					Usage: "Input file instead the challenge input",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				languageName := c.String("language")
+				inputFile := c.String("input_file")
+
+				if languageName == "" {
+					fmt.Println("Provide a language for which to generate the next solution file")
+					return nil
+				}
+
+				if !slices.Contains(availableLanguages, languageName) {
+					fmt.Printf("Language: %s is not supported.\n", languageName)
+					fmt.Printf("Supported languages: %s\n", strings.Join(availableLanguages, "\n"))
+					return nil
+				}
+
+				language := util.ConvertLanguage(languageName)
+
+				datestr := c.String("date")
+
+				if datestr == "" {
+					fmt.Println("Provide a date for which to generate a solution")
+					return nil
+				}
+
+				date := util.GetDate(datestr)
+				solve(language, date, inputFile)
 
 				return nil
 			},
@@ -94,13 +126,26 @@ func commands() {
 	}
 }
 
-func generate_code_file(language Language) error {
-	fmt.Printf("Generating code file for: %s\n", language.name)
+func generate_code_file(language util.Language) error {
+	fmt.Printf("Generating code file for: %s\n", language.Name)
 
-	nextDate := GetNextDate(language)
+	nextDate := util.GetNextDate(language)
 	fmt.Printf("Next date found: %s\n", nextDate.Format())
 
 	CreateCodeFile(language, nextDate)
 
 	return nil
+}
+
+func solve(language util.Language, date util.Date, inputFile string) {
+	fmt.Printf("Solve for %s in \"%s\"\n", date.Format(), language.Name)
+
+	runner := runners.GetRunner(language)
+
+	if runner == nil {
+		fmt.Printf("Runner for \"%s\" not found.\n", language.Name)
+		return
+	}
+
+	runner.Run(date, inputFile)
 }

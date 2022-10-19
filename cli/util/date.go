@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"fmt"
@@ -10,15 +10,33 @@ import (
 )
 
 type Date struct {
-	year, day int
+	Year, Day int
+}
+
+var minYear = 2015
+var maxYear = 2022
+var minDay = 1
+var maxDay = 25
+
+var supportedYears []int
+var supportedDays []int
+
+func init() {
+	for i := minYear; i <= maxYear; i++ {
+		supportedYears = append(supportedYears, i)
+	}
+
+	for i := minDay; i <= maxDay; i++ {
+		supportedDays = append(supportedDays, i)
+	}
 }
 
 func (date Date) Format() string {
-	return fmt.Sprintf("%d/%02d", date.year, date.day)
+	return fmt.Sprintf("%d/%02d", date.Year, date.Day)
 }
 
 func GetNextDate(language Language) Date {
-	languageFolder := fmt.Sprintf("Solutions/%s", language.name)
+	languageFolder := fmt.Sprintf("Solutions/%s", language.Name)
 	fmt.Printf("Language folder: %s\n", languageFolder)
 	folders, err := os.ReadDir(languageFolder)
 
@@ -30,8 +48,8 @@ func GetNextDate(language Language) Date {
 
 	if len(years) == 0 {
 		return Date{
-			year: minYear,
-			day:  minDay,
+			Year: minYear,
+			Day:  minDay,
 		}
 	}
 
@@ -41,8 +59,8 @@ func GetNextDate(language Language) Date {
 
 		if len(days) == 0 {
 			return Date{
-				year: year,
-				day:  minDay,
+				Year: year,
+				Day:  minDay,
 			}
 		}
 
@@ -52,8 +70,8 @@ func GetNextDate(language Language) Date {
 		}
 
 		return Date{
-			year: year,
-			day:  nextDay,
+			Year: year,
+			Day:  nextDay,
 		}
 	}
 
@@ -63,8 +81,8 @@ func GetNextDate(language Language) Date {
 	}
 
 	return Date{
-		year: nextYear,
-		day:  1,
+		Year: nextYear,
+		Day:  1,
 	}
 }
 
@@ -115,4 +133,16 @@ func GetDays(yearFolderPath string) []int {
 	}
 
 	return result
+}
+
+func GetDate(datestr string) Date {
+	splittedDate := strings.Split(datestr, "/")
+
+	year, _ := strconv.Atoi(splittedDate[0])
+	day, _ := strconv.Atoi(splittedDate[1])
+
+	return Date{
+		Year: year,
+		Day:  day,
+	}
 }

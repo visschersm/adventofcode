@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"log"
@@ -6,8 +6,8 @@ import (
 )
 
 type Language struct {
-	name string
-	ext  string
+	Name string
+	Ext  string
 }
 
 func ConvertLanguage(languageName string) Language {
@@ -15,14 +15,14 @@ func ConvertLanguage(languageName string) Language {
 
 	case "csharp":
 		return Language{
-			name: "csharp",
-			ext:  ".cs",
+			Name: "csharp",
+			Ext:  ".cs",
 		}
 
 	case "go":
 		return Language{
-			name: "go",
-			ext:  ".go",
+			Name: "go",
+			Ext:  ".go",
 		}
 	default:
 		log.Fatal("language not supported: ", languageName)
@@ -31,7 +31,7 @@ func ConvertLanguage(languageName string) Language {
 	return Language{}
 }
 
-func get_available_languages() []string {
+func GetAvailableLanguages() []string {
 	var result []string
 
 	folders, err := os.ReadDir("Solutions")
