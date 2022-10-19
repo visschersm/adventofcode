@@ -19,6 +19,11 @@ func ConvertLanguage(languageName string) Language {
 			ext:  ".cs",
 		}
 
+	case "go":
+		return Language{
+			name: "go",
+			ext:  ".go",
+		}
 	default:
 		log.Fatal("language not supported: ", languageName)
 	}

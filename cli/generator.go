@@ -9,6 +9,11 @@ import (
 )
 
 func CreateCodeFile(language Language, date Date) error {
+	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.name)
+	if !fileExists(templateFile) {
+		log.Fatal("Template file does not exist: ", templateFile)
+	}
+
 	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.name, date.year)
 	generate_path(yearFolderPath)
 
