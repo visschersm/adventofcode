@@ -24,6 +24,13 @@ func ConvertLanguage(languageName string) Language {
 			Name: "go",
 			Ext:  ".go",
 		}
+
+	case "php":
+		return Language{
+			Name: "php",
+			Ext:  ".php",
+		}
+
 	default:
 		log.Fatal("language not supported: ", languageName)
 	}

@@ -10,4 +10,5 @@ func GetRunner(language util.Language) Runner {
 
 func init() {
 	r["csharp"] = &CSharpRunner{}
+	r["php"] = &PHPRunner{}
 }

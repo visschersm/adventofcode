@@ -54,8 +54,15 @@ func commands() {
 			Name:    "generate",
 			Aliases: []string{"g"},
 			Usage:   "Generate Solution file for language",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "language",
+					Usage:   "language to generate solution in",
+					Aliases: []string{"l"},
+				},
+			},
 			Action: func(c *cli.Context) error {
-				languageName := c.Args().First()
+				languageName := c.String("language")
 
 				if languageName == "" {
 					fmt.Println("Provide a language for which to generate the next solution file")
