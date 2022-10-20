@@ -10,8 +10,9 @@ import (
 type PHPRunner struct{}
 
 func (runner *PHPRunner) Run(date util.Date, input_file string) {
+	fmt.Printf("PHP runner for date: %s\n", date.Format())
 
-	cmd := exec.Command("php", "Solutions/php", date.Format())
+	cmd := exec.Command("php", "Solutions/php/adventofcode.php", "-d", date.Format())
 	stdout, err := cmd.Output()
 
 	if err != nil {

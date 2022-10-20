@@ -22,8 +22,6 @@ public class Solution01
         var tryCounter = 0;
 
         var text = File.ReadAllText(filename).ToList();
-        // File.ReadAllText(filename).Foreach()
-
 
         foreach (var c in text)
         {
