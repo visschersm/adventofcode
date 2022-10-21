@@ -31,6 +31,12 @@ func ConvertLanguage(languageName string) Language {
 			Ext:  ".php",
 		}
 
+	case "kotlin":
+		return Language{
+			Name: "kotlin",
+			Ext:  ".kt",
+		}
+
 	default:
 		log.Fatal("language not supported: ", languageName)
 	}

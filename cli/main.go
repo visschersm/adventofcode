@@ -17,7 +17,6 @@ import (
 var app = cli.NewApp()
 
 func main() {
-
 	info()
 	commands()
 
@@ -28,9 +27,9 @@ func main() {
 }
 
 func info() {
-	app.Name = "AdventOfCode CLI"
-	app.Usage = "Tool to generate solutions files"
-	app.Version = "0.0.4"
+	app.Name = "aoc"
+	app.Usage = "Tool to generate advent of code solution files in multiple languages."
+	app.Version = "0.0.5"
 }
 
 func commands() {
@@ -38,9 +37,8 @@ func commands() {
 
 	app.Commands = []*cli.Command{
 		{
-			Name:    "random",
-			Aliases: []string{"r"},
-			Usage:   "Ask for random language",
+			Name:  "random",
+			Usage: "Ask for random language",
 			Action: func(c *cli.Context) error {
 				rand.Seed(time.Now().UnixNano())
 				min := 1
@@ -51,18 +49,30 @@ func commands() {
 			},
 		},
 		{
-			Name:    "generate",
-			Aliases: []string{"g"},
-			Usage:   "Generate Solution file for language",
+			Name:  "generate",
+			Usage: "Generate Solution file for language",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "language",
 					Usage:   "language to generate solution in",
 					Aliases: []string{"l"},
 				},
+				&cli.StringFlag{
+					Name:    "date",
+					Usage:   "date to generate solution for",
+					Aliases: []string{"d"},
+				},
 			},
 			Action: func(c *cli.Context) error {
 				languageName := c.String("language")
+				datestr := c.String("date")
+
+				var date *util.Date
+
+				if datestr != "" {
+					d := util.GetDate(datestr)
+					date = &d
+				}
 
 				if languageName == "" {
 					fmt.Println("Provide a language for which to generate the next solution file")
@@ -76,7 +86,7 @@ func commands() {
 				}
 
 				language := util.ConvertLanguage(languageName)
-				generate_code_file(language)
+				generate_code_file(language, date)
 
 				return nil
 			},
@@ -133,10 +143,16 @@ func commands() {
 	}
 }
 
-func generate_code_file(language util.Language) error {
+func generate_code_file(language util.Language, date *util.Date) error {
 	fmt.Printf("Generating code file for: %s\n", language.Name)
 
-	nextDate := util.GetNextDate(language)
+	var nextDate util.Date
+	if date != nil {
+		nextDate = *date
+	} else {
+		nextDate = util.GetNextDate(language)
+	}
+
 	fmt.Printf("Next date found: %s\n", nextDate.Format())
 
 	CreateCodeFile(language, nextDate)
