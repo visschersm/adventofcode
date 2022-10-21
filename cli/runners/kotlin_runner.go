@@ -13,11 +13,12 @@ func (runner *KotlinRunner) Run(date util.Date, input_file string) {
 	cmd := exec.Command(
 		"kotlinc",
 		"adventofcode.kt",
-		"-include-runtime",
-		"-d",
-		"adventofcode.jar",
-		"-jar",
-		"adventofcode.jar",
+		"2015/01",
+		// "-include-runtime",
+		// "-d",
+		// "Solutions/kotlin",
+		// "-jar",
+		// "adventofcode.jar",
 		date.Format())
 	stdout, err := cmd.Output()
 

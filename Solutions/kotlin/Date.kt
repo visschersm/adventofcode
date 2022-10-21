@@ -1,0 +1,1 @@
+class Date(val year: Int, val day: Int)
