@@ -10,6 +10,7 @@ func GetRunner(language util.Language) Runner {
 
 func init() {
 	r["csharp"] = &CSharpRunner{}
+	r["java"] = &JavaRunner{}
 	r["kotlin"] = &KotlinRunner{}
 	r["php"] = &PHPRunner{}
 }
