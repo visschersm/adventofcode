@@ -143,9 +143,7 @@ func commands() {
 	}
 }
 
-func generate_code_file(language util.Language, date *util.Date) error {
-	fmt.Printf("Generating code file for: %s\n", language.Name)
-
+func generate_code_file(language util.Language, date *util.Date) {
 	var nextDate util.Date
 	if date != nil {
 		nextDate = *date
@@ -153,11 +151,10 @@ func generate_code_file(language util.Language, date *util.Date) error {
 		nextDate = util.GetNextDate(language)
 	}
 
-	fmt.Printf("Next date found: %s\n", nextDate.Format())
+	var formattedDate = fmt.Sprintf("%d/%02d", nextDate.Year, nextDate.Day)
+	fmt.Printf("Generating code file for: %s, %s\n", language.Name, formattedDate)
 
 	CreateCodeFile(language, nextDate)
-
-	return nil
 }
 
 func solve(language util.Language, date util.Date, inputFile string) {

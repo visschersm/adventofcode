@@ -19,7 +19,6 @@ func CreateCodeFile(language util.Language, date util.Date) error {
 	generate_path(yearFolderPath)
 
 	fullpath := fmt.Sprintf("%s/solution%02d%s", yearFolderPath, date.Day, language.Ext)
-	fmt.Printf("Fullpath: %s\n", fullpath)
 
 	if fileExists(fullpath) {
 		fmt.Println("file already exists")
@@ -48,7 +47,6 @@ func CreateCodeFile(language util.Language, date util.Date) error {
 }
 
 func generate_path(yearFolder string) {
-	fmt.Printf("Creating path: %s\n", yearFolder)
 	if err := os.MkdirAll(yearFolder, 0770); err != nil {
 		log.Fatal(err)
 	}

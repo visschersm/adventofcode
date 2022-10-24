@@ -40,7 +40,7 @@ func ConvertLanguage(languageName string) Language {
 	case "java":
 		return Language{
 			Name: "java",
-			Ext:  "java",
+			Ext:  ".java",
 		}
 
 	default:
