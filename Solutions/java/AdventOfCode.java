@@ -22,7 +22,6 @@ public class AdventOfCode {
         var className = String.format("Solutions.java.y%d.Solution%02d", date.year, date.day);
         try
         {
-
             var classObject = Class.forName(className);
             var instance = classObject.getDeclaredConstructor().newInstance();
             
