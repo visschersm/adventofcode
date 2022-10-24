@@ -15,7 +15,7 @@ func (runner *JavaRunner) Run(date util.Date, input_file string) {
 		"-cp",
 		".",
 		"Solutions/java/*.java")
-	Execute(cmd)
+	runner.Execute(cmd)
 
 	cmd = exec.Command(
 		"java",
@@ -23,10 +23,10 @@ func (runner *JavaRunner) Run(date util.Date, input_file string) {
 		".",
 		"Solutions/java/AdventOfCode",
 		date.Format())
-	Execute(cmd)
+	runner.Execute(cmd)
 }
 
-func Execute(cmd *exec.Cmd) {
+func (runner *JavaRunner) Execute(cmd *exec.Cmd) {
 	stdout, err := cmd.Output()
 
 	if err != nil {
