@@ -37,6 +37,12 @@ func ConvertLanguage(languageName string) Language {
 			Ext:  ".kt",
 		}
 
+	case "java":
+		return Language{
+			Name: "java",
+			Ext:  "java",
+		}
+
 	default:
 		log.Fatal("language not supported: ", languageName)
 	}
