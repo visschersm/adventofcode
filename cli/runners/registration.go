@@ -33,6 +33,7 @@ func GetRegisteredLanguageNames() []string {
 
 func init() {
 	r["csharp"] = &CSharpRunner{}
+	r["go"] = &GoRunner{}
 	r["java"] = &JavaRunner{}
 	r["kotlin"] = &KotlinRunner{}
 	r["php"] = &PHPRunner{}
