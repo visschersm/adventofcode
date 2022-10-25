@@ -25,10 +25,10 @@ func ConvertLanguage(languageName string) Language {
 			Ext:  ".go",
 		}
 
-	case "php":
+	case "java":
 		return Language{
-			Name: "php",
-			Ext:  ".php",
+			Name: "java",
+			Ext:  ".java",
 		}
 
 	case "kotlin":
@@ -37,10 +37,16 @@ func ConvertLanguage(languageName string) Language {
 			Ext:  ".kt",
 		}
 
-	case "java":
+	case "php":
 		return Language{
-			Name: "java",
-			Ext:  ".java",
+			Name: "php",
+			Ext:  ".php",
+		}
+
+	case "python":
+		return Language{
+			Name: "python",
+			Ext:  ".py",
 		}
 
 	default:

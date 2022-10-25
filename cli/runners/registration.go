@@ -37,4 +37,5 @@ func init() {
 	r["java"] = &JavaRunner{}
 	r["kotlin"] = &KotlinRunner{}
 	r["php"] = &PHPRunner{}
+	r["python"] = &PythonRunner{}
 }
