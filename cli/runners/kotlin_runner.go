@@ -14,6 +14,8 @@ func (runner *KotlinRunner) Run(date util.Date, input_file string) {
 		"kotlinc",
 		"-cp",
 		".",
+		"-d",
+		"Solutions/kotlin",
 		"Solutions/kotlin")
 
 	runner.Execute(cmd)
