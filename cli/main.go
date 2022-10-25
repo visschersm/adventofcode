@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -138,6 +139,18 @@ func commands() {
 				solve(language, date, inputFile)
 
 				return nil
+			},
+			Subcommands: []*cli.Command{
+				{
+					Name:  "supported_languages",
+					Usage: "Get a list of supported languages",
+					Action: func(c *cli.Context) error {
+						var supportedLanguages = runners.GetRegisteredLanguageNames()
+						sort.Strings(supportedLanguages)
+						fmt.Println(strings.Join(supportedLanguages, "\n"))
+						return nil
+					},
+				},
 			},
 		},
 	}
