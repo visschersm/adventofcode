@@ -3,25 +3,31 @@ package Solutions.kotlin;
 import kotlin.reflect.cast
 
 fun main(args: Array<String>) {
-    if (args.size == 0) {
+    if(dateProvided(args)) {
         println("Please provide a date for which to solve a challenge")
         return
     }
 
-    val dateStr = args[0]
-    val date = getDate(dateStr)
+    val date = getDate(args)
     
     val solution = getSolution(date)
-    solve(solution)
+    val inputFile = getInputFile(date, args)
+
+    solve(solution, inputFile)
 }
 
-fun getDate(date: String): Date {
-    val splittedDate = date.split("/")
+fun dateProvided(args: Array<String>): Boolean {
+    return args.size == 0
+}
+
+fun getDate(args: Array<String>): Date {
+    val splittedDate = args[0].split("/")
     return Date(splittedDate[0].toInt(), splittedDate[1].toInt())
 }
 
 fun getSolution(date: Date): Solution {
-    val className = "Solutions.kotlin.y%d.Solution%02d".format(date.year, date.day)
+    val className = getClassName(date)
+
     val classObject = Class.forName(className).kotlin
     val ctor = classObject.constructors.first()
     val obj = ctor.call() as Solution
@@ -29,7 +35,18 @@ fun getSolution(date: Date): Solution {
     return obj
 }
 
-fun solve(solution: Solution) {
-    solution.Part1("inputfile")
-    solution.Part2("inputfile")
+fun getClassName(date: Date): String {
+    return "Solutions.kotlin.y%d.Solution%02d".format(date.year, date.day)
+}
+
+fun getInputFile(date: Date, args: Array<String>): String {
+    if (args.size >= 2)
+        return args[1] 
+    else 
+        return "Inputs/%d/%02d.txt".format(date.year, date.day)
+}
+
+fun solve(solution: Solution, inputFile: String) {
+    solution.Part1(inputFile);
+    solution.Part2(inputFile);
 }
