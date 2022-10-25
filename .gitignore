@@ -8,7 +8,9 @@
 # python
 __pycache__/
 
-*.exe
-
 # java
+*.class
+
+# kotlin
+META-INF
 *.class
