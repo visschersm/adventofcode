@@ -1,4 +1,6 @@
-package Solutions
+package Solutions.kotlin.y2015
+
+import Solutions.kotlin.Solution
 
 class Solution01 : Solution
 {

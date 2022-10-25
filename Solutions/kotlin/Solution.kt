@@ -1,4 +1,4 @@
-package Solutions
+package Solutions.kotlin;
 
 interface Solution
 {

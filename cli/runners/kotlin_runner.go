@@ -14,7 +14,7 @@ func (runner *KotlinRunner) Run(date util.Date, input_file string) {
 		"kotlinc",
 		"-cp",
 		".",
-		"Solutions/kotlin/*.kt")
+		"Solutions/kotlin")
 
 	runner.Execute(cmd)
 
@@ -22,8 +22,9 @@ func (runner *KotlinRunner) Run(date util.Date, input_file string) {
 		"kotlin",
 		"-cp",
 		".",
-		"Solutions/kotlin/AdventOfCode",
-	)
+		"Solutions/kotlin/AdventofcodeKt.class",
+		date.Format())
+
 	runner.Execute(cmd)
 }
 

@@ -1,6 +1,13 @@
-// import Solutions.*
+package Solutions.kotlin;
+
+import Solutions.kotlin.Date;
 
 fun main(args: Array<String>) {
+    if (args.size == 0) {
+        println("Please provide a date for which to solve a challenge")
+        return
+    }
+
     val dateStr = args[0]
     val date = getDate(dateStr)
     print(date.Format())
