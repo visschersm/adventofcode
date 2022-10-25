@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
     val dateStr = args[0]
     val date = getDate(dateStr)
     
-    solve(date)
+    val solution = getSolution(date)
+    solve(solution)
 }
 
 fun getDate(date: String): Date {
@@ -19,11 +20,16 @@ fun getDate(date: String): Date {
     return Date(splittedDate[0].toInt(), splittedDate[1].toInt())
 }
 
-fun solve(date: Date) {
+fun getSolution(date: Date): Solution {
     val className = "Solutions.kotlin.y%d.Solution%02d".format(date.year, date.day)
     val classObject = Class.forName(className).kotlin
     val ctor = classObject.constructors.first()
     val obj = ctor.call() as Solution
-    obj.Part1("inputfile")
-    obj.Part2("inputfile")
+
+    return obj
+}
+
+fun solve(solution: Solution) {
+    solution.Part1("inputfile")
+    solution.Part2("inputfile")
 }
