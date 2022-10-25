@@ -62,7 +62,5 @@ if (part2Method == null)
     return;
 }
 
-Console.Write("Answer part1: ");
 part1Method.Invoke(solution, new[] { filename });
-Console.Write("Answer part2: ");
 part2Method.Invoke(solution, new[] { filename });
