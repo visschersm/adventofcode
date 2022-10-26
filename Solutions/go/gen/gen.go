@@ -150,9 +150,9 @@ func get_code_template() string {
 	return `package registration
 
 import (
-	"fmt"
 	"adventofcode/lib"
 	<years>
+	"fmt"
 )
 
 var r = make(map[string]lib.Solution)
@@ -162,8 +162,7 @@ func GetSolution(year, day int) lib.Solution {
 }
 
 func init() {
-<solutions>
-}
+<solutions>}
 	`
 }
 
@@ -183,7 +182,7 @@ func replace_solutions(code string, dates []Date) string {
 	for _, date := range dates {
 		year := date.year
 		day := date.day
-		result += fmt.Sprintf("\tr[\"%d/%02d\"] = &y%d.Solution%02d{};\n", year, day, year, day)
+		result += fmt.Sprintf("\tr[\"%d/%02d\"] = &y%d.Solution%02d{}\n", year, day, year, day)
 	}
 
 	code = strings.Replace(code, "<solutions>", result, -1)
