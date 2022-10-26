@@ -17,7 +17,6 @@ public class Solution01 implements Solution {
         try {
             var data = Files.readString(filename);
             for (int i =0; i < data.length(); ++i) {
-                System.out.print(data.charAt(i));
                 result += data.charAt(i) == '(' ? 1 : -1;
             }
         }
@@ -25,7 +24,7 @@ public class Solution01 implements Solution {
 
         }
 
-        System.out.printf("Santa is ont he %dth floor\n", result);
+        System.out.printf("Santa is on the %dth floor\n", result);
     }
 
     @Override

@@ -8,9 +8,9 @@ public class AdventOfCode {
         }
 
         var date = getDate(args[0]);
-        System.out.printf("Provided date: %d/%02d\n", date.year, date.day);
 
-        solve(date);
+        var inputFile = getInputFile(args, date);
+        solve(date, inputFile);
     }
 
     public static Date getDate(String dateStr) {
@@ -18,7 +18,7 @@ public class AdventOfCode {
         return new Date(Integer.parseInt(splittedDate[0]), Integer.parseInt(splittedDate[1]));
     }
 
-    public static void solve(Date date) {
+    public static void solve(Date date, String inputFile) {
         var className = String.format("Solutions.java.y%d.Solution%02d", date.year, date.day);
         try
         {
@@ -28,8 +28,8 @@ public class AdventOfCode {
             var part1 = classObject.getMethod("Part1", String.class);
             var part2 = classObject.getMethod("Part2", String.class);
             
-            part1.invoke(instance, "");
-            part2.invoke(instance, "");
+            part1.invoke(instance, inputFile);
+            part2.invoke(instance, inputFile);
         }
         catch(ClassNotFoundException e)
         {
@@ -39,5 +39,12 @@ public class AdventOfCode {
         {
             System.out.println("Something went wrong");
         }
+    }
+
+    public static String getInputFile(String[] args, Date date) {
+        if (args.length >= 2)
+            return args[1]; 
+        else 
+            return String.format("Inputs/%d/%02d.txt", date.year, date.day);
     }
 }
