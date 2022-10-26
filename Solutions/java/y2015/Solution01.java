@@ -29,7 +29,26 @@ public class Solution01 implements Solution {
 
     @Override
     public void Part2(String inputFile) {
-        System.out.println("Part2 not yet implemented");
+        Path filename = Path.of(inputFile);
+        var result = 0;
+        var tryCounter = 0;
+
+        try {
+            var data = Files.readString(filename);
+            for (int i =0; i < data.length(); ++i) {
+                result += data.charAt(i) == '(' ? 1 : -1;
+                tryCounter++;
+
+                if(result < 0) {
+                    break;
+                }
+            }
+        }
+        catch(IOException exception) {
+
+        }
+
+        System.out.printf("Santa found the basement after %d tries", tryCounter);
     }
     
 }
