@@ -2,7 +2,9 @@ package util
 
 import (
 	"log"
+	"math/rand"
 	"os"
+	"time"
 )
 
 type Language struct {
@@ -50,7 +52,7 @@ func ConvertLanguage(languageName string) Language {
 		}
 
 	default:
-		log.Fatal("language not supported: ", languageName)
+		log.Fatal("language not added to converter: ", languageName)
 	}
 
 	return Language{}
@@ -71,4 +73,13 @@ func GetAvailableLanguages() []string {
 	}
 
 	return result
+}
+
+func RandomLanguage() Language {
+	availableLanguages := GetAvailableLanguages()
+	rand.Seed(time.Now().UnixNano())
+	min := 1
+	max := len(availableLanguages)
+	randomValue := rand.Intn(max-min) + min
+	return ConvertLanguage(availableLanguages[randomValue-1])
 }

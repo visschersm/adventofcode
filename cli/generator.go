@@ -7,16 +7,46 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/urfave/cli/v2"
+	"golang.org/x/exp/slices"
 )
 
-func CreateCodeFile(language util.Language, date util.Date) error {
+func GenerateRandomCodeFile(c *cli.Context) error {
+	language := util.RandomLanguage()
+	date := util.GetNextDate(language)
+
+	createCodeFile(language, date)
+
+	return nil
+}
+
+func GenerateCodeFile(c *cli.Context) error {
+	language := getLanguage(c)
+
+	if language == nil {
+		fmt.Println("Provide a language that is supported for which to generate a Solution file.")
+		return nil
+	}
+
+	date := getDate(c, *language)
+
+	var formattedDate = fmt.Sprintf("%d/%02d", date.Year, date.Day)
+	fmt.Printf("Generating code file for: %s, %s\n", language.Name, formattedDate)
+
+	createCodeFile(*language, *date)
+
+	return nil
+}
+
+func createCodeFile(language util.Language, date util.Date) error {
 	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	if !fileExists(templateFile) {
 		log.Fatal("Template file does not exist: ", templateFile)
 	}
 
 	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.Name, date.Year)
-	generate_path(yearFolderPath)
+	generatePath(yearFolderPath)
 
 	fullpath := fmt.Sprintf("%s/solution%02d%s", yearFolderPath, date.Day, language.Ext)
 
@@ -33,7 +63,7 @@ func CreateCodeFile(language util.Language, date util.Date) error {
 
 	textWriter := bufio.NewWriter(file)
 
-	code := generate_code(language, date)
+	code := generateCode(language, date)
 
 	_, err = textWriter.WriteString(code)
 
@@ -46,7 +76,38 @@ func CreateCodeFile(language util.Language, date util.Date) error {
 	return nil
 }
 
-func generate_path(yearFolder string) {
+func getDate(c *cli.Context, language util.Language) *util.Date {
+	var nextDate util.Date
+
+	datestr := c.String("date")
+
+	if datestr != "" {
+		nextDate = util.GetDate(datestr)
+	} else {
+		nextDate = util.GetNextDate(language)
+	}
+
+	return &nextDate
+}
+
+func getLanguage(c *cli.Context) *util.Language {
+	languageName := c.String("language")
+
+	if languageName == "" {
+		return nil
+	}
+
+	availableLanguages := util.GetAvailableLanguages()
+	if !slices.Contains(availableLanguages, languageName) {
+		return nil
+	}
+
+	language := util.ConvertLanguage(languageName)
+
+	return &language
+}
+
+func generatePath(yearFolder string) {
 	if err := os.MkdirAll(yearFolder, 0770); err != nil {
 		log.Fatal(err)
 	}
@@ -60,7 +121,7 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func generate_code(language util.Language, date util.Date) string {
+func generateCode(language util.Language, date util.Date) string {
 	fmt.Printf("Generating code for: %s\n", language.Name)
 	var code string
 

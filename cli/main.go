@@ -5,11 +5,9 @@ import (
 	"aoc_cli/util"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/urfave/cli/v2"
 	"golang.org/x/exp/slices"
@@ -34,20 +32,11 @@ func info() {
 }
 
 func commands() {
-	availableLanguages := util.GetAvailableLanguages()
-
 	app.Commands = []*cli.Command{
 		{
-			Name:  "random",
-			Usage: "Ask for random language",
-			Action: func(c *cli.Context) error {
-				rand.Seed(time.Now().UnixNano())
-				min := 1
-				max := len(availableLanguages)
-				randomValue := rand.Intn(max-min) + min
-				fmt.Printf("Why don't you try some \"%s\" today?", availableLanguages[randomValue-1])
-				return nil
-			},
+			Name:   "random",
+			Usage:  "Ask for random language",
+			Action: getRandomSuggestion,
 		},
 		{
 			Name:  "generate",
@@ -64,36 +53,17 @@ func commands() {
 					Aliases: []string{"d"},
 				},
 			},
-			Action: func(c *cli.Context) error {
-				languageName := c.String("language")
-				datestr := c.String("date")
-
-				var date *util.Date
-
-				if datestr != "" {
-					d := util.GetDate(datestr)
-					date = &d
-				}
-
-				if languageName == "" {
-					fmt.Println("Provide a language for which to generate the next solution file")
-					return nil
-				}
-
-				if !slices.Contains(availableLanguages, languageName) {
-					fmt.Printf("Language: %s is not supported.\n", languageName)
-					fmt.Printf("Supported languages: %s\n", strings.Join(availableLanguages, "\n"))
-					return nil
-				}
-
-				language := util.ConvertLanguage(languageName)
-				generate_code_file(language, date)
-
-				return nil
+			Action: GenerateCodeFile,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "random",
+					Usage:  "Generate next solution file for random language",
+					Action: GenerateRandomCodeFile,
+				},
 			},
 		},
 		{
-			Name:  "run",
+			Name:  "solve",
 			Usage: "Solve a challenge for a specific language",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
@@ -111,63 +81,16 @@ func commands() {
 					Usage: "Input file instead the challenge input",
 				},
 			},
-			Action: func(c *cli.Context) error {
-				languageName := c.String("language")
-				inputFile := c.String("input_file")
-
-				if languageName == "" {
-					fmt.Println("Provide a language for which to generate the next solution file")
-					return nil
-				}
-
-				if !slices.Contains(availableLanguages, languageName) {
-					fmt.Printf("Language: %s is not supported.\n", languageName)
-					fmt.Printf("Supported languages: %s\n", strings.Join(availableLanguages, "\n"))
-					return nil
-				}
-
-				language := util.ConvertLanguage(languageName)
-
-				datestr := c.String("date")
-
-				if datestr == "" {
-					fmt.Println("Provide a date for which to generate a solution")
-					return nil
-				}
-
-				date := util.GetDate(datestr)
-				solve(language, date, inputFile)
-
-				return nil
-			},
+			Action: solveChallenge,
 			Subcommands: []*cli.Command{
 				{
-					Name:  "supported_languages",
-					Usage: "Get a list of supported languages",
-					Action: func(c *cli.Context) error {
-						var supportedLanguages = runners.GetRegisteredLanguageNames()
-						sort.Strings(supportedLanguages)
-						fmt.Println(strings.Join(supportedLanguages, "\n"))
-						return nil
-					},
+					Name:   "languages",
+					Usage:  "Get a list of supported languages",
+					Action: printSupportedLanguageList,
 				},
 			},
 		},
 	}
-}
-
-func generate_code_file(language util.Language, date *util.Date) {
-	var nextDate util.Date
-	if date != nil {
-		nextDate = *date
-	} else {
-		nextDate = util.GetNextDate(language)
-	}
-
-	var formattedDate = fmt.Sprintf("%d/%02d", nextDate.Year, nextDate.Day)
-	fmt.Printf("Generating code file for: %s, %s\n", language.Name, formattedDate)
-
-	CreateCodeFile(language, nextDate)
 }
 
 func solve(language util.Language, date util.Date, inputFile string) {
@@ -181,4 +104,47 @@ func solve(language util.Language, date util.Date, inputFile string) {
 	}
 
 	runner.Run(date, inputFile)
+}
+
+func getRandomSuggestion(c *cli.Context) error {
+	fmt.Printf("Why don't you try some \"%s\" today?", util.RandomLanguage().Name)
+	return nil
+}
+
+func solveChallenge(c *cli.Context) error {
+	languageName := c.String("language")
+	inputFile := c.String("input_file")
+
+	if languageName == "" {
+		fmt.Println("Provide a language for which to generate the next solution file")
+		return nil
+	}
+
+	availableLanguages := util.GetAvailableLanguages()
+	if !slices.Contains(availableLanguages, languageName) {
+		fmt.Printf("Language: %s is not supported.\n", languageName)
+		fmt.Printf("Supported languages: %s\n", strings.Join(availableLanguages, "\n"))
+		return nil
+	}
+
+	language := util.ConvertLanguage(languageName)
+
+	datestr := c.String("date")
+
+	if datestr == "" {
+		fmt.Println("Provide a date for which to generate a solution")
+		return nil
+	}
+
+	date := util.GetDate(datestr)
+	solve(language, date, inputFile)
+
+	return nil
+}
+
+func printSupportedLanguageList(c *cli.Context) error {
+	var supportedLanguages = runners.GetRegisteredLanguageNames()
+	sort.Strings(supportedLanguages)
+	fmt.Println(strings.Join(supportedLanguages, "\n"))
+	return nil
 }
