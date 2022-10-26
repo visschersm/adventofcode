@@ -51,6 +51,12 @@ func ConvertLanguage(languageName string) Language {
 			Ext:  ".py",
 		}
 
+	case "v":
+		return Language{
+			Name: "v",
+			Ext:  ".v",
+		}
+
 	default:
 		log.Fatal("language not added to converter: ", languageName)
 	}
