@@ -40,6 +40,7 @@ func GenerateCodeFile(c *cli.Context) error {
 }
 
 func createCodeFile(language util.Language, date util.Date) error {
+
 	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	if !fileExists(templateFile) {
 		log.Fatal("Template file does not exist: ", templateFile)
@@ -48,14 +49,13 @@ func createCodeFile(language util.Language, date util.Date) error {
 	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.Name, date.Year)
 	generatePath(yearFolderPath)
 
-	fullpath := fmt.Sprintf("%s/solution%02d%s", yearFolderPath, date.Day, language.Ext)
+	fullpath := fmt.Sprintf("%s/Solution%02d%s", yearFolderPath, date.Day, language.Ext)
 
 	if fileExists(fullpath) {
 		fmt.Println("file already exists")
 		return fmt.Errorf("file already exists: %s", fullpath)
 	}
 
-	fmt.Printf("Creating file: %s\n", fullpath)
 	file, err := os.OpenFile(fullpath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -122,11 +122,9 @@ func fileExists(filename string) bool {
 }
 
 func generateCode(language util.Language, date util.Date) string {
-	fmt.Printf("Generating code for: %s\n", language.Name)
 	var code string
 
 	templatePath := fmt.Sprintf("Templates/%s.tmpl", language.Name)
-	fmt.Printf("Opening template: %s\n", templatePath)
 	template, err := os.Open(templatePath)
 
 	if err != nil {
@@ -142,8 +140,6 @@ func generateCode(language util.Language, date util.Date) string {
 	}
 
 	for _, line := range lines {
-		fmt.Printf("Template line: %s\n", line)
-
 		code += line + "\n"
 	}
 
@@ -152,6 +148,5 @@ func generateCode(language util.Language, date util.Date) string {
 	code = strings.Replace(code, "<year>", fmt.Sprintf("%d", date.Year), -1)
 	code = strings.Replace(code, "<day>", fmt.Sprintf("%02d", date.Day), -1)
 
-	fmt.Printf("Generated code:\n%s\n", code)
 	return code
 }
