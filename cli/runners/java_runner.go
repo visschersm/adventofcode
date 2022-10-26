@@ -10,12 +10,17 @@ import (
 type JavaRunner struct{}
 
 func (runner *JavaRunner) Run(date util.Date, input_file string) {
+	// 	cmd := exec.Command(
+	// 		"javac",
+	// 		"-cp",
+	// 		".",
+	// 		"Solutions/java/*.java")
+	// for /r %%a in (.) do (javac %%a\*.java)
 	cmd := exec.Command(
-		"javac",
-		"-cp",
-		".",
-		"Solutions/java/*.java")
-	runner.Execute(cmd)
+		"CMD",
+		"/C",
+		`cli\runners\java_runner.bat`)
+	runner.Execute(cmd, false)
 
 	cmd = exec.Command(
 		"java",
@@ -23,14 +28,17 @@ func (runner *JavaRunner) Run(date util.Date, input_file string) {
 		".",
 		"Solutions/java/AdventOfCode",
 		date.Format())
-	runner.Execute(cmd)
+	runner.Execute(cmd, true)
 }
 
-func (runner *JavaRunner) Execute(cmd *exec.Cmd) {
+func (runner *JavaRunner) Execute(cmd *exec.Cmd, print bool) {
 	stdout, err := cmd.Output()
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(stdout))
+
+	if print {
+		fmt.Println(string(stdout))
+	}
 }

@@ -1,12 +1,31 @@
 package Solutions.java.y2015;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import Solutions.java.Solution;
 
 public class Solution01 implements Solution {
 
     @Override
     public void Part1(String inputFile) {
-        System.out.println("Part1 not yet implemented");
+        Path filename = Path.of(inputFile);
+        var result = 0;
+
+        try {
+            var data = Files.readString(filename);
+            for (int i =0; i < data.length(); ++i) {
+                System.out.print(data.charAt(i));
+                result += data.charAt(i) == '(' ? 1 : -1;
+            }
+        }
+        catch(IOException exception) {
+
+        }
+
+        System.out.printf("Santa is ont he %dth floor\n", result);
     }
 
     @Override

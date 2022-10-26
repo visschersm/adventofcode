@@ -1,0 +1,1 @@
+FOR /f %%i IN ('dir /s /b Solutions\java\*.java') DO javac -cp . %%i
