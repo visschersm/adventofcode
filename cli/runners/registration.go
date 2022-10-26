@@ -38,4 +38,5 @@ func init() {
 	r["kotlin"] = &KotlinRunner{}
 	r["php"] = &PHPRunner{}
 	r["python"] = &PythonRunner{}
+	r["v"] = &VRunner{}
 }
