@@ -14,6 +14,11 @@ type Language struct {
 
 func ConvertLanguage(languageName string) Language {
 	switch languageName {
+	case "bash":
+		return Language{
+			Name: "bash",
+			Ext:  ".sh",
+		}
 
 	case "csharp":
 		return Language{
