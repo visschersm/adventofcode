@@ -35,8 +35,8 @@ func (date Date) Format() string {
 	return fmt.Sprintf("%d/%02d", date.Year, date.Day)
 }
 
-func GetNextDate(language Language) Date {
-	languageFolder := fmt.Sprintf("Solutions/%s", language.Name)
+func GetNextDate(languageName string) Date {
+	languageFolder := fmt.Sprintf("Solutions/%s", languageName)
 	fmt.Printf("Language folder: %s\n", languageFolder)
 	folders, err := os.ReadDir(languageFolder)
 
