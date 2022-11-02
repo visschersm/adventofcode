@@ -16,3 +16,4 @@ func init() {
 	r["2015/01"] = &y2015.Solution01{}
 	r["2015/02"] = &y2015.Solution02{}
 }
+	
