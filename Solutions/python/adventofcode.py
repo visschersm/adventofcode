@@ -37,7 +37,7 @@ def main(argumentList):
     if overrideFile is not None:
         input = overrideFile
 
-    module_name = "y" + str(year) + ".solution" + strNum
+    module_name = "y" + str(year) + ".Solution" + strNum
 
     __import__(module_name)
     mymodule = sys.modules[module_name]
