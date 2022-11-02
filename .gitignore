@@ -14,3 +14,10 @@ __pycache__/
 # kotlin
 META-INF
 *.class
+
+# haskell
+*.hi
+*.o
+
+# windows execution build
+*.exe
