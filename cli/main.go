@@ -3,6 +3,7 @@ package main
 import (
 	"aoc_cli/runners"
 	"aoc_cli/util"
+	"aoc_cli/util/languages"
 	"fmt"
 	"log"
 	"os"
@@ -93,21 +94,14 @@ func commands() {
 	}
 }
 
-func solve(language util.Language, date util.Date, inputFile string) {
+func solve(language languages.Language, date util.Date, inputFile string) {
 	fmt.Printf("Solve for %s in \"%s\"\n", date.Format(), language.Name)
 
-	runner := runners.GetRunner(language)
-
-	if runner == nil {
-		fmt.Printf("Runner for \"%s\" not found.\n", language.Name)
-		return
-	}
-
-	runner.Run(date, inputFile)
+	runners.Run(language, date, inputFile)
 }
 
 func getRandomSuggestion(c *cli.Context) error {
-	fmt.Printf("Why don't you try some \"%s\" today?", util.RandomLanguage().Name)
+	fmt.Printf("Why don't you try some \"%s\" today?", languages.GetRandomLanguage().Name)
 	return nil
 }
 
@@ -120,14 +114,18 @@ func solveChallenge(c *cli.Context) error {
 		return nil
 	}
 
-	availableLanguages := util.GetAvailableLanguages()
+	availableLanguages := languages.GetAvailableLanguages()
 	if !slices.Contains(availableLanguages, languageName) {
 		fmt.Printf("Language: %s is not supported.\n", languageName)
 		fmt.Printf("Supported languages: %s\n", strings.Join(availableLanguages, "\n"))
 		return nil
 	}
 
-	language := util.ConvertLanguage(languageName)
+	language, err := languages.GetLanguage(languageName)
+
+	if err != nil {
+		return fmt.Errorf(err.Error())
+	}
 
 	datestr := c.String("date")
 
@@ -137,13 +135,13 @@ func solveChallenge(c *cli.Context) error {
 	}
 
 	date := util.GetDate(datestr)
-	solve(language, date, inputFile)
+	solve(*language, date, inputFile)
 
 	return nil
 }
 
 func printSupportedLanguageList(c *cli.Context) error {
-	var supportedLanguages = runners.GetRegisteredLanguageNames()
+	var supportedLanguages = languages.GetRegisteredLanguageNames()
 	sort.Strings(supportedLanguages)
 	fmt.Println(strings.Join(supportedLanguages, "\n"))
 	return nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc_cli/util"
+	"aoc_cli/util/languages"
 	"bufio"
 	"fmt"
 	"log"
@@ -13,8 +14,8 @@ import (
 )
 
 func GenerateRandomCodeFile(c *cli.Context) error {
-	language := util.RandomLanguage()
-	date := util.GetNextDate(language)
+	language := languages.GetRandomLanguage()
+	date := util.GetNextDate(language.Name)
 
 	createCodeFile(language, date)
 
@@ -39,7 +40,7 @@ func GenerateCodeFile(c *cli.Context) error {
 	return nil
 }
 
-func createCodeFile(language util.Language, date util.Date) error {
+func createCodeFile(language languages.Language, date util.Date) error {
 
 	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	if !fileExists(templateFile) {
@@ -76,7 +77,7 @@ func createCodeFile(language util.Language, date util.Date) error {
 	return nil
 }
 
-func getDate(c *cli.Context, language util.Language) *util.Date {
+func getDate(c *cli.Context, language languages.Language) *util.Date {
 	var nextDate util.Date
 
 	datestr := c.String("date")
@@ -84,27 +85,27 @@ func getDate(c *cli.Context, language util.Language) *util.Date {
 	if datestr != "" {
 		nextDate = util.GetDate(datestr)
 	} else {
-		nextDate = util.GetNextDate(language)
+		nextDate = util.GetNextDate(language.Name)
 	}
 
 	return &nextDate
 }
 
-func getLanguage(c *cli.Context) *util.Language {
+func getLanguage(c *cli.Context) *languages.Language {
 	languageName := c.String("language")
 
 	if languageName == "" {
 		return nil
 	}
 
-	availableLanguages := util.GetAvailableLanguages()
+	availableLanguages := languages.GetAvailableLanguages()
 	if !slices.Contains(availableLanguages, languageName) {
 		return nil
 	}
 
-	language := util.ConvertLanguage(languageName)
+	language, _ := languages.GetLanguage(languageName)
 
-	return &language
+	return language
 }
 
 func generatePath(yearFolder string) {
@@ -121,7 +122,7 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func generateCode(language util.Language, date util.Date) string {
+func generateCode(language languages.Language, date util.Date) string {
 	var code string
 
 	templatePath := fmt.Sprintf("Templates/%s.tmpl", language.Name)
