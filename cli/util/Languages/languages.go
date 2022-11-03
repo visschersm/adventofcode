@@ -115,7 +115,7 @@ var Languages = map[string]Language{
 		Commands: []Command{
 			{
 				Print:   true,
-				Command: exec.Command("echo", "haskell not yet implemented"),
+				Command: exec.Command("runhaskell", "Solutions/haskell/AdventOfCode.hs", "<date>"),
 			},
 		},
 	},
