@@ -17,6 +17,7 @@ func GenerateRandomCodeFile(c *cli.Context) error {
 	language := languages.GetRandomLanguage()
 	date := util.GetNextDate(language.Name)
 
+	fmt.Printf("Generating code file for: %s in %s\n", date.Format(), language.Name)
 	createCodeFile(language, date)
 
 	return nil
@@ -32,15 +33,17 @@ func GenerateCodeFile(c *cli.Context) error {
 
 	date := getDate(c, *language)
 
-	var formattedDate = fmt.Sprintf("%d/%02d", date.Year, date.Day)
-	fmt.Printf("Generating code file for: %s, %s\n", language.Name, formattedDate)
-
+	fmt.Printf("Generating code file for: %s in %s\n", date.Format(), language.Name)
 	createCodeFile(*language, *date)
 
 	return nil
 }
 
 func createCodeFile(language languages.Language, date util.Date) error {
+
+	if language.Ext == "" {
+		log.Fatal("Language extension missing")
+	}
 
 	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
 	if !fileExists(templateFile) {
