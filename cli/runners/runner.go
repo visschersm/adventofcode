@@ -11,6 +11,8 @@ func Run(language languages.Language, date util.Date, inputFile string) {
 		for index, arg := range command.Command.Args {
 			if arg == "<date>" {
 				command.Command.Args[index] = date.Format()
+			} else if arg == "<input_file>" {
+				command.Command.Args[index] = inputFile
 			}
 		}
 

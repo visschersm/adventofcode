@@ -135,6 +135,11 @@ func solveChallenge(c *cli.Context) error {
 	}
 
 	date := util.GetDate(datestr)
+
+	if inputFile == "" {
+		inputFile = getInputFile(date)
+	}
+
 	solve(*language, date, inputFile)
 
 	return nil
@@ -145,4 +150,8 @@ func printSupportedLanguageList(c *cli.Context) error {
 	sort.Strings(supportedLanguages)
 	fmt.Println(strings.Join(supportedLanguages, "\n"))
 	return nil
+}
+
+func getInputFile(date util.Date) string {
+	return fmt.Sprintf("Inputs/%d/%02d.txt", date.Year, date.Day)
 }
