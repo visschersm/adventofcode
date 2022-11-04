@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace AdventOfCode.Y2015;
 
 [Solution(2015, 2)]
@@ -12,7 +10,6 @@ public class Solution02
         int total = data.Sum(gift => gift.Surface() + gift.MinSurface());
         
         Console.WriteLine($"The elves need to order \"{total}\" square feet of wrapping paper");
-        
     }
 
     [Part2]
@@ -23,6 +20,7 @@ public class Solution02
         {
             return new[] { gift.l, gift.w, gift.h }.Order().Take(2).Sum(x => x * 2) + gift.Cubed();
         });
+        
         Console.WriteLine($"The elves need to order \"{total}\" feet of ribbon.");
     }
 

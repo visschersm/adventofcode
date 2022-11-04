@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using AdventOfCode;
+﻿using AdventOfCode;
 
 namespace Solutions.y2015d01;
 
