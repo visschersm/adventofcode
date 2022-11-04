@@ -8,8 +8,7 @@ public class Solution03
     [Part1]
     public void Part1(string filename)
     {
-        var startPosition = (0, 0);
-        var currentPosition = startPosition;
+        var currentPosition = (0, 0);
 
         Dictionary<(int, int), int> gifts = new();
 
