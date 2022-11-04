@@ -240,10 +240,11 @@ var Languages = map[string]Language{
 	},
 	"r": {
 		Name: "r",
+		Ext:  ".r",
 		Commands: []Command{
 			{
 				Print:   true,
-				Command: exec.Command("echo", "r not yet implemented"),
+				Command: exec.Command("rscript", "Solutions/r/AdventOfCode.r", "<date>"),
 			},
 		},
 	},
