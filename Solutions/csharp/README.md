@@ -27,3 +27,10 @@ In the code file include the following:
 ```
 
 In the code file replace YYYY with the year and DD with the day for which the solution is.
+
+# Running 
+from root: 
+```bash
+
+dotnet run --project Solutions/csharp/adventofcode.csproj <date> <input_file>
+```
