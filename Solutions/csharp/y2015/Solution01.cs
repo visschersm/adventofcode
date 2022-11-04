@@ -19,9 +19,7 @@ public class Solution01
         var floor = 0;
         var tryCounter = 0;
 
-        var text = File.ReadAllText(filename).ToList();
-
-        foreach (var c in text)
+        foreach (var c in FileHelper.ReadByCharacter(filename))
         {
             tryCounter++;
             floor += c == '(' ? 1 : -1;
