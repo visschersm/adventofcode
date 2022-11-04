@@ -180,7 +180,7 @@ var Languages = map[string]Language{
 		Commands: []Command{
 			{
 				Print:   true,
-				Command: exec.Command("echo", "lua not yet implemented"),
+				Command: exec.Command("lua", "Solutions/lua/AdventOfCode.lua", "<date>"),
 			},
 		},
 	},
