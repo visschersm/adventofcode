@@ -38,15 +38,5 @@ public class Solution02
         public int MinSurface() => Math.Min(Math.Min(l * w, w * h), h * l);
         public int Surface() => 2 * l * w + 2 * w * h + 2 * h * l;
         public int Cubed() => l * w * h;
-        public (int, int) ShortestPerimeter()
-        {
-            //new[] {l, w, h}.Order().Take(2);
-            var v1 = l * w;
-            var v2 = w * h;
-            var v3 = h * l;
-
-            var faces = new[] { v1, v2, v3 };
-            return (faces.Order().Take(1).Single(), faces.Order().Skip(1).Take(1).Single());
-        }
     }
 }
