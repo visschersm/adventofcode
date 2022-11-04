@@ -176,6 +176,7 @@ var Languages = map[string]Language{
 	},
 	"lua": {
 		Name: "lua",
+		Ext:  ".lua",
 		Commands: []Command{
 			{
 				Print:   true,
