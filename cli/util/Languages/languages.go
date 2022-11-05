@@ -38,15 +38,6 @@ var Languages = map[string]Language{
 			},
 		},
 	},
-	"clojure": {
-		Name: "clojure",
-		Commands: []Command{
-			{
-				Print:   true,
-				Command: exec.Command("echo", "clojure not yet implemented"),
-			},
-		},
-	},
 	"cpp": {
 		Name: "cpp",
 		Ext:  ".cpp",
