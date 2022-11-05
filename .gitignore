@@ -21,3 +21,9 @@ META-INF
 
 # windows execution build
 *.exe
+
+# Clojure
+.clj-kondo
+
+# lisp
+.lsp
