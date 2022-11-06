@@ -8,24 +8,21 @@ solution01 inputFile = do
 part1 :: String -> IO()
 part1 inputFile = do
    input <- readFile inputFile
-   let result = cal input
-   putStrLn ("Santa is on the " ++ (show result) ++ "th floor")
-
-cal :: String -> Int
-cal [] = 0
-cal (x : xs)
-    | x == '(' = 1 + (cal xs)
-    | x == ')' = -1 + (cal xs)
+   let result = sum (map up_down input)
+   print ("Santa is on the " ++ (show result) ++ "th floor")
 
 part2 :: String -> IO()
 part2 inputFile = do
     input <- readFile inputFile
     let result = basement input 0 0
-    putStrLn ("Santa found the basement after " ++ (show result) ++ " tries")
+    print ("Santa found the basement after " ++ (show result) ++ " tries")
 
 basement :: String -> Int -> Int -> Int
 basement [] _ _ = 0
 basement (x : xs) floor trycounter
     | floor < 0 = trycounter
-    | x == '(' = (basement xs (floor + 1) (trycounter + 1))
-    | x == ')' = (basement xs (floor - 1) (trycounter + 1))
+    | otherwise = (basement xs (floor + (up_down x)) (trycounter + 1))
+
+up_down c = case c of
+    '(' -> 1
+    ')' -> -1
