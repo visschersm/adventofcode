@@ -18,3 +18,6 @@ cubed a b c = a * b * c
 surface :: Int -> Int -> Int -> Int
 surface l w h = 
     2*l*w + 2*w*h + 2*h*l
+
+double :: Int -> Int
+double x = x * 2
