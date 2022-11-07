@@ -38,6 +38,19 @@ var Languages = map[string]Language{
 			},
 		},
 	},
+	"clojure": {
+		Name: "clojure",
+		Ext:  ".clj",
+		Commands: []Command{
+			{
+				Print: true,
+				Command: exec.Command(
+					"powershell",
+					"Solutions/clojure/run.ps1",
+					"<date>"),
+			},
+		},
+	},
 	"cpp": {
 		Name: "cpp",
 		Ext:  ".cpp",
@@ -66,6 +79,7 @@ var Languages = map[string]Language{
 	},
 	"dart": {
 		Name: "dart",
+		Ext:  ".dart",
 		Commands: []Command{
 			{
 				Print:   true,
@@ -280,6 +294,7 @@ var Languages = map[string]Language{
 	},
 	"swift": {
 		Name: "swift",
+		Ext:  ".swift",
 		Commands: []Command{
 			{
 				Print:   true,
@@ -318,6 +333,15 @@ var Languages = map[string]Language{
 			{
 				Print:   true,
 				Command: exec.Command("echo", "visual basic not yet implemented"),
+			},
+		},
+	},
+	"zig": {
+		Name: "zig",
+		Commands: []Command{
+			{
+				Print:   true,
+				Command: exec.Command("echo", "zig not yet implemented"),
 			},
 		},
 	},
