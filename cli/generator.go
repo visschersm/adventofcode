@@ -39,6 +39,16 @@ func GenerateCodeFile(c *cli.Context) error {
 	return nil
 }
 
+func getYearsFolder(language languages.Language, date util.Date) string {
+	source := language.SourceFolder
+
+	if source == "" {
+		return fmt.Sprintf("Solutions/%s/y%d", language.Name, date.Year)
+	}
+
+	return fmt.Sprintf("Solutions/%s/%s/y%d", language.Name, source, date.Year)
+}
+
 func createCodeFile(language languages.Language, date util.Date) error {
 
 	if language.Ext == "" {
@@ -50,7 +60,7 @@ func createCodeFile(language languages.Language, date util.Date) error {
 		log.Fatal("Template file does not exist: ", templateFile)
 	}
 
-	yearFolderPath := fmt.Sprintf("Solutions/%s/y%d", language.Name, date.Year)
+	yearFolderPath := getYearsFolder(language, date)
 	generatePath(yearFolderPath)
 
 	fullpath := fmt.Sprintf("%s/Solution%02d%s", yearFolderPath, date.Day, language.Ext)

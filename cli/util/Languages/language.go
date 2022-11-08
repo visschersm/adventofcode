@@ -9,9 +9,10 @@ import (
 )
 
 type Language struct {
-	Name     string
-	Ext      string
-	Commands []Command
+	Name         string
+	Ext          string
+	Commands     []Command
+	SourceFolder string
 }
 
 func GetAvailableLanguages() []string {
