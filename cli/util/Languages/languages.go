@@ -39,15 +39,16 @@ var Languages = map[string]Language{
 		},
 	},
 	"clojure": {
-		Name: "clojure",
-		Ext:  ".clj",
+		Name:         "clojure",
+		Ext:          ".clj",
 		Commands: []Command{
 			{
 				Print: true,
 				Command: exec.Command(
 					"powershell",
 					"Solutions/clojure/run.ps1",
-					"<date>"),
+					"<date>",
+					"<input_file>"),
 			},
 		},
 	},
