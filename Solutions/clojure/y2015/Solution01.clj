@@ -8,6 +8,7 @@
     0))
 
 (defn directions [data] (for [c data] (sign c)))
+
 (defn Part1 [input_file]
   (def input (slurp input_file))
   (def data (str/split input #""))
