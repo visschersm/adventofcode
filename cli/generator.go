@@ -15,10 +15,16 @@ import (
 
 func GenerateRandomCodeFile(c *cli.Context) error {
 	language := languages.GetRandomLanguage()
-	date := util.GetNextDate(language.Name)
+
+	date := getDate(c, language)
+
+	if date == nil {
+		returnValue := util.GetNextDate(language.Name)
+		date = &returnValue
+	}
 
 	fmt.Printf("Generating code file for: %s in %s\n", date.Format(), language.Name)
-	createCodeFile(language, date)
+	createCodeFile(language, *date)
 
 	return nil
 }
