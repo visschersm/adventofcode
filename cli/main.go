@@ -60,6 +60,13 @@ func commands() {
 					Name:   "random",
 					Usage:  "Generate next solution file for random language",
 					Action: GenerateRandomCodeFile,
+					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name:    "date",
+							Usage:   "date to generate solution for",
+							Aliases: []string{"d"},
+						},
+					},
 				},
 			},
 		},
