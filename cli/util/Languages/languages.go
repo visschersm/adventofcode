@@ -88,6 +88,14 @@ var Languages = map[string]Language{
 			},
 		},
 	},
+	"elixir": {
+		Name: "elixir",
+		Ext: ".exs",
+		Commands: []Command {
+			Print: true,
+			Command: exec.Command("elixir", "Solutions/elixir/adventofcode.exs")
+		},
+	},
 	"fsharp": {
 		Name: "fsharp",
 		Ext:  ".fs",
