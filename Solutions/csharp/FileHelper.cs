@@ -7,4 +7,12 @@ public class FileHelper
             yield return c;
         }
     }
+
+    public static IEnumerable<string> ReadByLine(string filename)
+    {
+        foreach(string line in File.ReadLines(filename))
+        {
+            yield return line;
+        }
+    }
 }
