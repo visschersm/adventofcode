@@ -39,8 +39,8 @@ var Languages = map[string]Language{
 		},
 	},
 	"clojure": {
-		Name:         "clojure",
-		Ext:          ".clj",
+		Name: "clojure",
+		Ext:  ".clj",
 		Commands: []Command{
 			{
 				Print: true,
@@ -90,10 +90,12 @@ var Languages = map[string]Language{
 	},
 	"elixir": {
 		Name: "elixir",
-		Ext: ".exs",
-		Commands: []Command {
-			Print: true,
-			Command: exec.Command("elixir", "Solutions/elixir/adventofcode.exs")
+		Ext:  ".exs",
+		Commands: []Command{
+			{
+				Print:   true,
+				Command: exec.Command("elixir", "Solutions/elixir/adventofcode.exs"),
+			},
 		},
 	},
 	"fsharp": {
