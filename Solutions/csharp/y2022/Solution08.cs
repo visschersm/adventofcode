@@ -52,79 +52,36 @@ public class Solution08
             for(int x = 1; x < data[y].Length - 1; ++x)
             {
                 var currentTree = data[y][x];
-                bool blocked = false;
-                int scenicScore = data[y][0..x].Reverse().TakeWhile(tree =>
-                {
-                    if (blocked) return false;
-
-                    if (tree < currentTree)
-                        return true;
-
-                    if(tree >= currentTree)
-                    {
-                        blocked = true;
-                        return true;
-                    }
-
-                    return false;
-
-                }).Count();
-                blocked = false;
-                scenicScore *= data[y][(x + 1)..].TakeWhile(tree =>
-                {
-                    if (blocked) return false;
-
-                    if (tree < currentTree)
-                        return true;
-
-                    if (tree >= currentTree)
-                    {
-                        blocked = true;
-                        return true;
-                    }
-
-                    return false;
-
-                }).Count();
-                blocked = false;
-                scenicScore *= data[0..y].Reverse().Select(line => line[x]).TakeWhile(tree =>
-                {
-                    if (blocked) return false;
-
-                    if (tree < currentTree)
-                        return true;
-
-                    if(tree >= currentTree)
-                    {
-                        blocked = true;
-                        return true;
-                    }
-
-                    return false;
-
-                }).Count();
-                blocked = false;
-                scenicScore *= data[(y + 1)..].Select(line => line[x]).TakeWhile(tree =>
-                {
-                    if (blocked) return false;
-
-                    if (tree < currentTree)
-                        return true;
-
-                    if (tree >= currentTree)
-                    {
-                        blocked = true;
-                        return true;
-                    }
-
-                    return false;
-
-                }).Count();
+                int scenicScore = GetScore(data[y][0..x].Reverse().ToArray(), currentTree);
+                scenicScore *= GetScore(data[y][(x + 1)..].ToArray(), currentTree);
+                scenicScore *= GetScore(data[0..y].Reverse().Select(line => line[x]).ToArray(), currentTree);
+                scenicScore *= GetScore(data[(y + 1)..].Select(line => line[x]).ToArray(), currentTree);
 
                 maxScore = Math.Max(scenicScore, maxScore);
             }
         }
 
         Console.WriteLine($"Highest scenic score: {maxScore}");
+    }
+
+    public int GetScore(ICollection<int> data, int currentTree)
+    {
+        bool blocked = false;
+        return data.TakeWhile(tree =>
+        {
+            if (blocked) return false;
+
+            if (tree < currentTree)
+                return true;
+
+            if(tree >= currentTree)
+            {
+                blocked = true;
+                return true;
+            }
+
+            return false;
+
+        }).Count();
     }
 }
