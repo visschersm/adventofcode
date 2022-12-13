@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using AdventOfCode;
-
 namespace Solutions.y2022d09;
 
 [Solution(2022, 9)]
@@ -9,13 +8,8 @@ public class Solution09
     [Part1]
     public void Part1(string filename)
     {
-        List<Position> positions = new List<Position>
-        {
-            new Position(0,0)
-        };
-        
-        Position head = new Position(0,0);
-        Position tail = new Position(0,0);
+        var rope = Enumerable.Range(0, 2).Select(x => new Position(0, 0)).ToList();
+        List<Position> positions = new List<Position>();
 
         foreach(var command in File.ReadLines(filename))
         {
@@ -23,11 +17,10 @@ public class Solution09
             var direction = parts[0];
             var amount = int.Parse(parts[1]);
 
-            for(int i = 0; i < amount; ++i)
+            for (int i = 0; i < amount; ++i)
             {
-                head = head.Move(direction);
-                tail = tail.Chase(head);
-                positions.Add(tail);
+                MoveRope(rope, direction);
+                positions.Add(new Position(rope.Last().x, rope.Last().y));
             }
         }
 
@@ -38,39 +31,36 @@ public class Solution09
     [Part2]
     public void Part2(string filename)
     {
-        List<Position> positions = new List<Position>();
-        
         List<Position> rope = Enumerable.Range(0, 10).Select(x => new Position(0,0)).ToList();
-        var head = rope.First();
+        List<Position> positions = new List<Position>();
 
-        Console.WriteLine("Initial state");
-        Draw(rope.ToArray());
-
-        foreach(var command in File.ReadLines(filename))
+        foreach (var command in File.ReadLines(filename))
         {
             var parts = command.Split(" ");
             var direction = parts[0];
             var amount = int.Parse(parts[1]);
 
-            for(int i = 0; i < amount; ++i)
+            for (int i = 0; i < amount; ++i)
             {
-                head.SetPosition(head.Move(direction));
-                var previousKnot = head;
-                foreach(var knot in rope)
-                {
-                    knot.SetPosition(knot.Chase(previousKnot));
-                    previousKnot = knot;
-                }
-                
+                MoveRope(rope, direction);
                 positions.Add(new Position(rope.Last().x, rope.Last().y));
-                //Console.WriteLine($"Position: {rope.Last().x},{rope.Last().y}");
             }
-
-            //Draw(rope.ToArray());
         }
 
         Console.WriteLine($"All tail positions: {positions.Count()}");
         Console.WriteLine($"Distinct tail positions: {positions.GroupBy(pos => new {pos.x, pos.y}).Count()}");
+    }
+
+    private void MoveRope(List<Position> rope, string direction)
+    {
+        var head = rope.First();
+        head.SetPosition(head.Move(direction));
+        var previousKnot = head;
+        foreach (var knot in rope)
+        {
+            knot.SetPosition(knot.Chase(previousKnot));
+            previousKnot = knot;
+        }
     }
 
     public void Draw(Position[] positions)
