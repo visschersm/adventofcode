@@ -1,3 +1,4 @@
+using AdventOfCode.Lib;
 using AdventOfCode;
 
 namespace Solutions.y2022d02;

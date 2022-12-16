@@ -1,4 +1,5 @@
-﻿using AdventOfCode;
+﻿using AdventOfCode.Lib;
+using AdventOfCode;
 
 namespace Solutions.y2015d01;
 

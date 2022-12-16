@@ -12,15 +12,11 @@ public class Solution11
     [Part1]
     public void Part1(string filename)
     {
-        Monkey[] monkeys = GetMonkeys(filename);
+        var monkeys = GetMonkeys(filename);
 
-        for (int i = 0; i < 20; ++i)
-        {
-            Round(monkeys);
-        }
-
-        var ic = monkeys.OrderByDescending(monkey => monkey.InspectedCount).Select(monkey => monkey.InspectedCount).Take(2).ToArray();
-        Console.WriteLine($"Level of monkey business: {ic[0] * ic[1]}");
+        var monkeyBusiness = Compute(monkeys, 20);
+        
+        Console.WriteLine($"Level of monkey business: {monkeyBusiness}");
     }
 
     [Part2]
@@ -28,22 +24,24 @@ public class Solution11
     {
         var monkeys = GetMonkeys(filename);
 
-        for (int i = 1; i <= 10000; ++i)
+        var monkeyBusiness = Compute(monkeys, 10000, false);
+        
+        Console.WriteLine($"Level of monkey business: {monkeyBusiness}");
+    }
+
+    public long Compute(Monkey[] monkeys, int roundAmount, bool relief = true)
+    {
+        for (int i = 0; i < roundAmount; ++i)
         {
-            Round(monkeys, false);
-            if(i == 1 || i == 20 || i == 1000 || i == 2000)
-            {
-                Console.WriteLine($"== AFTER ROUND {i} ==");
-                foreach(var m in monkeys)
-                {
-                    Console.WriteLine($"Monkey {m.id} inspected {m.InspectedCount} items");
-                }
-                Console.WriteLine();
-            }
+            Round(monkeys, relief);
         }
 
-        var ic = monkeys.OrderByDescending(monkey => monkey.InspectedCount).Select(monkey => monkey.InspectedCount).Take(2).ToArray();
-        Console.WriteLine($"Level of monkey business: {ic[0] * ic[1]}");
+        var ic = monkeys.OrderByDescending(monkey => monkey.InspectedCount)
+            .Select(monkey => monkey.InspectedCount)
+            .Take(2)
+            .ToArray();
+
+        return ic.Aggregate((a, b) => a * b);
     }
 
     public Monkey[] GetMonkeys(string filename)
@@ -112,11 +110,7 @@ public class Solution11
 
     public void Round(Monkey[] monkeys, bool relief = true)
     {
-        // Inspects:
-        //  Worry -> Operation
-        //  Divide by 3
-        //  Test
-
+        // Sample senario
         //Monkey inspects an item with a worry level of 79.
         //Worry level is multiplied by 19 to 1501.
         //Monkey gets bored with item.Worry level is divided by 3 to 500.
@@ -132,28 +126,22 @@ public class Solution11
             for(int i = 0; i < monkey.Items.Count; ++i)
             {
                 var item = items[i];
-                //Console.WriteLine($"Monkey inspects an item with a worry level of {item}");
                 monkey.InspectedCount++;
                 var newValue = Calculate(monkey, item);
-                //Console.WriteLine($"Worry level is {GetOperationDesc(monkey)} by {monkey.OperationValue ?? item} to {newValue}");
                 if(relief)
                 {
                     newValue = DivideString(newValue, 3);
-                    //Console.WriteLine($"Monkey gets bored with item. Worry level is divided by 3 to {newValue}");
                 }
 
                 var modValue = ModString(newValue, monkey.TestValue);
                 var test = modValue == 0;
                 newValue = ModString(newValue, mlc).ToString();
-                //Console.WriteLine($"Current worry level is {(test ? "divisible" : "not divisible")} by {monkey.TestValue}");
                 if (test)
                 {
-                    //Console.WriteLine($"Item with worry level {newValue} is thrown to monkey {monkey.TrueValue}");
                     monkeys.Single(m => m.id == monkey.TrueValue).Items.Add(newValue);
                 }
                 else
                 {
-                    //Console.WriteLine($"Item with worry level {newValue} is thrown to monkey {monkey.FalseValue}");
                     monkeys.Single(m => m.id == monkey.FalseValue).Items.Add(newValue);
                 }
             }

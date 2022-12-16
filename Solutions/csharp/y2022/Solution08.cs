@@ -1,3 +1,4 @@
+using AdventOfCode.Lib;
 using AdventOfCode;
 
 namespace Solutions.y2022d08;
@@ -14,22 +15,21 @@ public class Solution08
 
         var visibleCount = data[0].Length * 2 + data.Length * 2 - 4;
 
-        for(int y = 1; y < data.Length - 1; ++y)
+        for (int y = 1; y < data.Length - 1; ++y)
         {
-            for(int x = 1; x < data[y].Length - 1; ++x)
+            for (int x = 1; x < data[y].Length - 1; ++x)
             {
                 var currentTree = data[y][x];
-                
+
                 bool notVisible = data[y][0..x].Any(tree => tree >= currentTree)
                     && data[y][(x + 1)..].Any(tree => tree >= currentTree)
                     && data[0..y].Select(line => line[x]).Any(tree => tree >= currentTree)
                     && data[(y + 1)..].Select(line => line[x]).Any(tree => tree >= currentTree);
 
-                if(!notVisible)
+                if (!notVisible)
                 {
                     visibleCount++;
                 }
-
             }
         }
 
@@ -47,9 +47,9 @@ public class Solution08
 
         int maxScore = int.MinValue;
 
-        for(int y = 1; y < data.Length - 1; ++y)
+        for (int y = 1; y < data.Length - 1; ++y)
         {
-            for(int x = 1; x < data[y].Length - 1; ++x)
+            for (int x = 1; x < data[y].Length - 1; ++x)
             {
                 var currentTree = data[y][x];
                 int scenicScore = GetScore(data[y][0..x].Reverse().ToArray(), currentTree);
@@ -74,14 +74,13 @@ public class Solution08
             if (tree < currentTree)
                 return true;
 
-            if(tree >= currentTree)
+            if (tree >= currentTree)
             {
                 blocked = true;
                 return true;
             }
 
             return false;
-
         }).Count();
     }
 }

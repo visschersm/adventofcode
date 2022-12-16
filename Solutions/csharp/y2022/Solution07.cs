@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using AdventOfCode.Lib;
 using AdventOfCode;
 
 namespace Solutions.y2022d07;
@@ -34,20 +35,20 @@ public class Solution07
             .Select(node => node.Size());
 
         var freeSpace = totalSize - nodes.Max();
-        var spaceNeeded = updateSize - freeSpace; 
+        var spaceNeeded = updateSize - freeSpace;
         Console.WriteLine($"Space needed: {spaceNeeded}");
 
         var result = nodes.Where(node => node >= spaceNeeded).Order().First();
-        // Find the smallest directory that, if deleted, would free up enough space on the filesystem 
+        // Find the smallest directory that, if deleted, would free up enough space on the filesystem
         // to run the update. What is the total size of that directory?
         Console.WriteLine($"Minimum folder size to be deleted: {result}");
     }
 
     public IEnumerable<Node> Flatten(Node node)
     {
-        foreach(var child in node.children)
+        foreach (var child in node.children)
         {
-            foreach(var r in Flatten(child))
+            foreach (var r in Flatten(child))
             {
                 yield return r;
             }
@@ -66,37 +67,37 @@ public class Solution07
 
         Node currentNode = root;
 
-        foreach(var line in FileHelper.ReadByLine(filename))
+        foreach (var line in FileHelper.ReadByLine(filename))
         {
-            if(line.StartsWith("$"))
+            if (line.StartsWith("$"))
             {
                 // Command
                 var command = new string(line.Skip(2).Take(2).ToArray());
-                if(command == "cd")
+                if (command == "cd")
                 {
                     var path = new string(line.Skip(5).ToArray());
-                    if(path == "..")
+                    if (path == "..")
                     {
                         currentNode = currentNode.parent;
                         continue;
                     }
-                    
-                    if(path == "/")
+
+                    if (path == "/")
                     {
                         currentNode = root;
                         continue;
                     }
-                        
+
                     currentNode = currentNode.children.Single(node => node.Path == path);
                     continue;
                 }
             }
             else // Listing
             {
-                if(line.StartsWith("dir"))
+                if (line.StartsWith("dir"))
                 {
                     var path = line.Substring(4);
-                    if(currentNode.children.Any(node => node.Path == path))
+                    if (currentNode.children.Any(node => node.Path == path))
                         continue;
 
                     currentNode.children.Add(new Node
@@ -106,12 +107,12 @@ public class Solution07
                         Type = NodeType.FOLDER
                     });
                 }
-                else 
+                else
                 {
                     var path = line.Split(" ")[1];
-                    if(currentNode.children.Any(node => node.Path == path))
+                    if (currentNode.children.Any(node => node.Path == path))
                         continue;
-                        
+
                     var regex = Regex.Match(line, @"\d+");
                     var size = int.Parse(regex.ToString());
 
@@ -140,14 +141,14 @@ public class Node
 
     public void Print(int depth)
     {
-        var print = Type == NodeType.FILE 
-            ? $"{Path} (file, size={Filesize})" 
+        var print = Type == NodeType.FILE
+            ? $"{Path} (file, size={Filesize})"
             : $"{Path} (dir)";
-        
+
         var tabs = string.Join("", Enumerable.Range(0, depth).Select(x => "\t").ToArray());
         Console.WriteLine($"{tabs}{print}");
         ++depth;
-        foreach(var child in children)
+        foreach (var child in children)
         {
             child.Print(depth);
         }
