@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using AdventOfCode;
 
@@ -62,5 +63,13 @@ if (part2Method == null)
     return;
 }
 
+var stopwatch = new Stopwatch();
+stopwatch.Start();
 part1Method.Invoke(solution, new[] { filename });
+stopwatch.Stop();
+Console.WriteLine($"Part1 ran for: {stopwatch.Elapsed:ss\\.fffffff} seconds");
+
+stopwatch.Restart();
 part2Method.Invoke(solution, new[] { filename });
+stopwatch.Stop();
+Console.WriteLine($"Part2 ran for: {stopwatch.Elapsed:ss\\.fffffff} seconds");
