@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
@@ -12,11 +13,14 @@ public class Solution15
     [Part1]
     public void Part1(string filename)
     {
-        return;
         int lineNumber = 2000000;
 
         List<Device> devices = GetDevices(filename);
-        var sensors = devices.Where(device => device.GetType() == typeof(Sensor)).Cast<Sensor>().ToList();
+
+        var sensors = devices.Where(device => device.GetType() == typeof(Sensor))
+            .Cast<Sensor>()
+            .ToArray();
+
         var beacons = devices.Where(device => device.GetType() == typeof(Beacon))
             .Where(beacon => beacon.position.y == lineNumber)
             .Select(beacon => beacon.position.x)
@@ -28,27 +32,14 @@ public class Solution15
         int result = 0;
         for (int x = minX; x <= maxX; x++)
         {
-            bool covered = false;
-            foreach (var sensor in sensors)
-            {
-                if (sensor.position.x == x && sensor.position.y == lineNumber)
-                    continue;
+            if (devices.Any(device => device.position.x == x && device.position.y == lineNumber))
+                continue;
 
-                if (beacons.Contains(x))
-                    continue;
-
-                var manhattanDistance = ManhattanDistance(new Position(x, lineNumber), sensor.position);
-                if (manhattanDistance <= sensor.ManhattanDistance)
-                {
-                    covered = true;
-                }
-            }
-
-            if (covered)
+            if (Covered(sensors, x, lineNumber) != null)
                 result++;
         }
 
-        Console.WriteLine($"The destres signal is not in {result} spots on line {lineNumber}");
+        Console.WriteLine($"The distress signal is not in {result} spots on line {lineNumber}");
     }
 
     [Part2]
@@ -182,102 +173,5 @@ public class Solution15
         { }
 
         public Position(int x, int y) => (this.x, this.y) = (x, y);
-    }
-
-    public class Map
-    {
-        private List<Device> devices;
-        private int minX;
-        private int maxX;
-        private int minY;
-        private int maxY;
-        private List<List<bool?>> points = new List<List<bool?>>();
-
-        public Map(List<Device> devices)
-        {
-            this.devices = devices;
-            var sensors = devices.Where(x => x.GetType() == typeof(Sensor)).Cast<Sensor>().ToArray();
-
-            this.minX = 0;
-            this.maxX = 20;
-            this.minY = 0;
-            this.maxY = 20;
-
-            List<List<bool?>> result = new List<List<bool?>>();
-
-            for (int y = minY; y <= maxY; ++y)
-            {
-                var row = new List<bool?>();
-                result.Add(row);
-                for (int x = minX; x <= maxX; ++x)
-                {
-                    row.Add(null);
-                }
-            }
-
-            points = result;
-
-            foreach (var device in devices)
-            {
-                if (device.position.x >= this.minX && device.position.x <= this.maxX && device.position.y >= this.minY && device.position.y <= this.maxY)
-                {
-                    this[device.position.x, device.position.y] = true;
-                }
-            }
-
-            foreach (var sensor in sensors)
-            {
-                for (int y = minY; y <= maxY; ++y)
-                {
-                    for (int x = minX; x <= maxX; ++x)
-                    {
-                        var manhattanDistance = ManhattanDistance(new Position(x, y), sensor.position);
-                        if (manhattanDistance <= sensor.ManhattanDistance)
-                        {
-                            if (this[x, y] != true)
-                                this[x, y] = false;
-                        }
-                    }
-                }
-            }
-        }
-
-        public bool? this[int x, int y]
-        {
-            get
-            {
-                return points[y - minY][x - minX];
-            }
-            set
-            {
-                points[y - minY][x - minX] = value;
-            }
-        }
-
-        public List<bool?> this[int y]
-        {
-            get
-            {
-                return points[y - minY];
-            }
-        }
-
-        internal void Draw()
-        {
-            for (int y = minY; y < maxY; ++y)
-            {
-                Console.Write($"{y}\t");
-                for (int x = minX; x < maxX; ++x)
-                {
-                    if (this[x, y] == null)
-                        Console.Write(".");
-                    else if (this[x, y] == false)
-                        Console.Write("#");
-                    else
-                        Console.Write("S");
-                }
-                Console.Write("\n");
-            }
-        }
     }
 }
