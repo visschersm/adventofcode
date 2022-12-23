@@ -7,7 +7,7 @@ namespace Solutions.y2022d01;
 public class Solution01
 {
     [Part1]
-    public void Part1(string filename)
+    public static void Part1(string filename)
     {
         var result = HighestCalories(filename, 1);
 
@@ -16,7 +16,7 @@ public class Solution01
     }
 
     [Part2]
-    public void Part2(string filename)
+    public static void Part2(string filename)
     {
         var result = HighestCalories(filename, 3);
 
@@ -24,7 +24,7 @@ public class Solution01
         Console.WriteLine($"The top three elves are carrying {result} calories!");
     }
 
-    public int HighestCalories(string filename, int take)
+    public static int HighestCalories(string filename, int take)
     {
         return FileHelper.ReadByLine(filename)
             .ChunkBy(line => !string.IsNullOrWhiteSpace(line))
@@ -39,10 +39,11 @@ public static class IEnumerableExtensions
 {
     public static IEnumerable<IEnumerable<T>> ChunkBy<T>(this IEnumerable<T> self, Func<T, bool> func)
     {
-        List<T> set = new List<T>();
-        foreach(var element in self)
+        List<T> set = new();
+
+        foreach (var element in self)
         {
-            if(func(element))
+            if (func(element))
             {
                 set.Add(element);
             }
