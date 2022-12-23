@@ -8,6 +8,9 @@
 # python
 __pycache__/
 
+# dotnet
+Solutions/csharp/Properties/launchSettings.json
+
 # java
 *.class
 
@@ -27,3 +30,4 @@ META-INF
 
 # lisp
 .lsp
+
