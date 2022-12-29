@@ -1,4 +1,6 @@
-import sys, getopt
+import sys
+import getopt
+import importlib.util
 
 def main(argumentList):
     date = ""
@@ -37,7 +39,11 @@ def main(argumentList):
     if overrideFile is not None:
         input = overrideFile
 
-    module_name = "y" + str(year) + ".Solution" + strNum
+    module_name = "y" + str(year) + ".solution" + strNum
+
+    if importlib.util.find_spec(module_name) is None:
+        print(module_name + " was not yet created.")
+        return
 
     __import__(module_name)
     mymodule = sys.modules[module_name]
