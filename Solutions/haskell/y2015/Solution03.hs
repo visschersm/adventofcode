@@ -23,7 +23,7 @@ part2 inputFile = do
 
 countUnique = length . nubOrd
 
-move :: Pos -> Char -> Pos
+move :: (Int, Int) -> Char -> (Int, Int)
 move (x, y) c = case c of
     '^' -> (x, y + 1)
     '>' -> (x + 1, y)
