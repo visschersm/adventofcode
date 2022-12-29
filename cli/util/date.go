@@ -123,6 +123,10 @@ func GetDays(yearFolderPath string) []int {
 	}
 
 	for _, solution := range solutionFiles {
+		if solution.IsDir() {
+			continue
+		}
+
 		day, convErr := strconv.Atoi(solution.Name()[8:10])
 
 		if convErr != nil {
