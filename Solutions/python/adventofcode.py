@@ -39,7 +39,7 @@ def main(argumentList):
     if overrideFile is not None:
         input = overrideFile
 
-    module_name = "y" + str(year) + ".solution" + strNum
+    module_name = "y" + str(year) + ".Solution" + strNum
 
     if importlib.util.find_spec(module_name) is None:
         print(module_name + " was not yet created.")
