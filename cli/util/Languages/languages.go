@@ -185,7 +185,7 @@ var Languages = map[string]Language{
 					"kotlin",
 					"-cp",
 					"Solutions/kotlin/build",
-					"Solutions.kotlin.AdventOfCodeKt",
+					"Solutions.kotlin.AdventofcodeKt",
 					"<date>"),
 			},
 		},

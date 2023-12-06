@@ -10,7 +10,6 @@ class Solution01 : Solution
     override fun Part1(inputFile: String) {
         val data = File(inputFile).readText()
         var result = data.count { it == '(' } - data.count { it == ')' }
-        
 
         print("Santa is on the %dth floor\n".format(result));
     }
