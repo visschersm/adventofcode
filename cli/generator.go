@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aoc_cli/util"
-	"aoc_cli/util/languages"
+	"aoc/util"
+	"aoc/util/languages"
 	"bufio"
 	"fmt"
 	"log"

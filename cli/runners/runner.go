@@ -1,8 +1,8 @@
 package runners
 
 import (
-	"aoc_cli/util"
-	"aoc_cli/util/languages"
+	"aoc/util"
+	"aoc/util/languages"
 	"fmt"
 )
 

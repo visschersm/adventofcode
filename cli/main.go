@@ -2,9 +2,9 @@
 package main
 
 import (
-	"aoc_cli/runners"
-	"aoc_cli/util"
-	"aoc_cli/util/languages"
+	"aoc/runners"
+	"aoc/util"
+	"aoc/util/languages"
 	"fmt"
 	"log"
 	"os"

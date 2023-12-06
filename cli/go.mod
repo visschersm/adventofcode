@@ -1,4 +1,4 @@
-module aoc_cli
+module aoc
 
 go 1.19
 
