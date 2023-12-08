@@ -41,6 +41,11 @@ func commands() {
 			Action: getRandomSuggestion,
 		},
 		{
+			Name:   "todo",
+			Usage:  "Add todo item",
+			Action: addTodoItem,
+		},
+		{
 			Name:  "generate",
 			Usage: "Generate Solution file for language",
 			Flags: []cli.Flag{
@@ -162,4 +167,10 @@ func printSupportedLanguageList(c *cli.Context) error {
 
 func getInputFile(date util.Date) string {
 	return fmt.Sprintf("Inputs/%d/%02d.txt", date.Year, date.Day)
+}
+
+func addTodoItem(c *cli.Context) error {
+	fmt.Sprintf("Adding todoitem %s", c.Args().Get(0))
+	// TODO: Implement some logic to save todo's to a file or database.
+	return nil
 }
