@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"sort"
 	"strings"
 
@@ -18,8 +19,10 @@ import (
 var app = cli.NewApp()
 
 func main() {
-	info()
-	commands()
+	Info()
+	Commands()
+
+	log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
 
 	err := app.Run(os.Args)
 	if err != nil {
@@ -27,24 +30,20 @@ func main() {
 	}
 }
 
-func info() {
+func Info() {
 	app.Name = "aoc"
 	app.Usage = "Tool to generate advent of code solution files in multiple languages."
 	app.Version = "0.0.5"
 }
 
-func commands() {
+func Commands() {
 	app.Commands = []*cli.Command{
 		{
 			Name:   "random",
 			Usage:  "Ask for random language",
-			Action: getRandomSuggestion,
+			Action: GetRandomSuggestion,
 		},
-		{
-			Name:   "todo",
-			Usage:  "Add todo item",
-			Action: addTodoItem,
-		},
+
 		{
 			Name:  "generate",
 			Usage: "Generate Solution file for language",
@@ -64,13 +63,18 @@ func commands() {
 			Subcommands: []*cli.Command{
 				{
 					Name:   "random",
-					Usage:  "Generate next solution file for random language",
+					Usage:  "Generate random solution file",
 					Action: GenerateRandomCodeFile,
 					Flags: []cli.Flag{
 						&cli.StringFlag{
 							Name:    "date",
-							Usage:   "date to generate solution for",
+							Usage:   "if you want to specify the date but not the language",
 							Aliases: []string{"d"},
+						},
+						&cli.StringFlag{
+							Name:    "language",
+							Usage:   "if you want to specify the language but not the date",
+							Aliases: []string{"l"},
 						},
 					},
 				},
@@ -95,30 +99,53 @@ func commands() {
 					Usage: "Input file instead the challenge input",
 				},
 			},
-			Action: solveChallenge,
+			Action: SolveChallenge,
 			Subcommands: []*cli.Command{
 				{
 					Name:   "languages",
 					Usage:  "Get a list of supported languages",
-					Action: printSupportedLanguageList,
+					Action: PrintSupportedLanguageList,
+				},
+			},
+		},
+		{
+			Name:   "todo",
+			Usage:  "Add todo item",
+			Action: AddTodoItem,
+		},
+		{
+			Name:   "open",
+			Usage:  "Open solution file",
+			Action: OpenSolution,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "language",
+					Usage:   "language to generate solution in",
+					Aliases: []string{"l"},
+				},
+				&cli.StringFlag{
+					Name:    "date",
+					Usage:   "date to generate solution for",
+					Aliases: []string{"d"},
 				},
 			},
 		},
 	}
 }
 
-func solve(language languages.Language, date util.Date, inputFile string) {
+func Solve(language languages.Language, date util.Date, inputFile string) {
 	fmt.Printf("Solve for %s in \"%s\"\n", date.Format(), language.Name)
 
 	runners.Run(language, date, inputFile)
 }
 
-func getRandomSuggestion(c *cli.Context) error {
+func GetRandomSuggestion(c *cli.Context) error {
+	log.Print("[GetRandomSuggestion]")
 	fmt.Printf("Why don't you try some \"%s\" today?", languages.GetRandomLanguage().Name)
 	return nil
 }
 
-func solveChallenge(c *cli.Context) error {
+func SolveChallenge(c *cli.Context) error {
 	languageName := c.String("language")
 	inputFile := c.String("input_file")
 
@@ -150,27 +177,59 @@ func solveChallenge(c *cli.Context) error {
 	date := util.GetDate(datestr)
 
 	if inputFile == "" {
-		inputFile = getInputFile(date)
+		inputFile = GetInputFile(date)
 	}
 
-	solve(*language, date, inputFile)
+	Solve(*language, date, inputFile)
 
 	return nil
 }
 
-func printSupportedLanguageList(c *cli.Context) error {
+func PrintSupportedLanguageList(c *cli.Context) error {
 	var supportedLanguages = languages.GetRegisteredLanguageNames()
 	sort.Strings(supportedLanguages)
 	fmt.Println(strings.Join(supportedLanguages, "\n"))
 	return nil
 }
 
-func getInputFile(date util.Date) string {
+func GetInputFile(date util.Date) string {
 	return fmt.Sprintf("Inputs/%d/%02d.txt", date.Year, date.Day)
 }
 
-func addTodoItem(c *cli.Context) error {
+func AddTodoItem(c *cli.Context) error {
 	fmt.Sprintf("Adding todoitem %s", c.Args().Get(0))
 	// TODO: Implement some logic to save todo's to a file or database.
+	return nil
+}
+
+func OpenSolution(c *cli.Context) error {
+	log.Print("[OpenSolution]")
+
+	filename := c.Args().Get(0)
+
+	log.Printf("[OpenSolution] Provided filename: %s", filename)
+
+	if filename == "" {
+		log.Printf("[OpenSolution] No filename provided, check flags")
+
+		language := GetLanguage(c)
+
+		if language == nil {
+			log.Printf("[OpenSolution] No language flag provided")
+			return nil
+		}
+
+		date := GetDate(c, *language)
+
+		if date == nil {
+			log.Printf("[OpenSolution] No date flag provided")
+			return nil
+		}
+
+		filename = GetFullPath(*language, *date)
+	}
+
+	cmd := exec.Command("code", filename)
+	cmd.Run()
 	return nil
 }

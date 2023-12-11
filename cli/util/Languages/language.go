@@ -16,6 +16,8 @@ type Language struct {
 }
 
 func GetAvailableLanguages() []string {
+	log.Print("[GetAvailableLanguages]")
+
 	var result []string
 
 	folders, err := os.ReadDir("Solutions")
@@ -33,6 +35,8 @@ func GetAvailableLanguages() []string {
 }
 
 func GetRandomLanguage() Language {
+	log.Print("[GetRandomLanguage]")
+
 	availableLanguages := GetAvailableLanguages()
 	rand.Seed(time.Now().UnixNano())
 	min := 1

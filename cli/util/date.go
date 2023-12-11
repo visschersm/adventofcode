@@ -21,7 +21,7 @@ var maxDay = 25
 var supportedYears []int
 var supportedDays []int
 
-func init() {
+func Init() {
 	for i := minYear; i <= maxYear; i++ {
 		supportedYears = append(supportedYears, i)
 	}

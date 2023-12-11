@@ -14,9 +14,16 @@ import (
 )
 
 func GenerateRandomCodeFile(c *cli.Context) error {
-	language := languages.GetRandomLanguage()
+	log.Print("[GenerateRandomCodeFile]")
 
-	date := getDate(c, language)
+	language := GetLanguage(c)
+
+	if language == nil {
+		randomLanguage := languages.GetRandomLanguage()
+		language = &randomLanguage
+	}
+
+	date := GetDate(c, *language)
 
 	if date == nil {
 		returnValue := util.GetNextDate(language.Name)
@@ -24,28 +31,28 @@ func GenerateRandomCodeFile(c *cli.Context) error {
 	}
 
 	fmt.Printf("Generating code file for: %s in %s\n", date.Format(), language.Name)
-	createCodeFile(language, *date)
+	CreateCodeFile(*language, *date)
 
 	return nil
 }
 
 func GenerateCodeFile(c *cli.Context) error {
-	language := getLanguage(c)
+	language := GetLanguage(c)
 
 	if language == nil {
 		fmt.Println("Provide a language that is supported for which to generate a Solution file.")
 		return nil
 	}
 
-	date := getDate(c, *language)
+	date := GetDate(c, *language)
 
 	fmt.Printf("Generating code file for: %s in %s\n", date.Format(), language.Name)
-	createCodeFile(*language, *date)
+	CreateCodeFile(*language, *date)
 
 	return nil
 }
 
-func getYearsFolder(language languages.Language, date util.Date) string {
+func GetYearsFolder(language languages.Language, date util.Date) string {
 	source := language.SourceFolder
 
 	if source == "" {
@@ -55,23 +62,23 @@ func getYearsFolder(language languages.Language, date util.Date) string {
 	return fmt.Sprintf("Solutions/%s/%s/y%d", language.Name, source, date.Year)
 }
 
-func createCodeFile(language languages.Language, date util.Date) error {
+func CreateCodeFile(language languages.Language, date util.Date) error {
 
 	if language.Ext == "" {
 		log.Fatal("Language extension missing")
 	}
 
 	templateFile := fmt.Sprintf("Templates/%s.tmpl", language.Name)
-	if !fileExists(templateFile) {
+	if !FileExists(templateFile) {
 		log.Fatal("Template file does not exist: ", templateFile)
 	}
 
-	yearFolderPath := getYearsFolder(language, date)
-	generatePath(yearFolderPath)
+	yearFolderPath := GetYearsFolder(language, date)
+	GeneratePath(yearFolderPath)
 
 	fullpath := fmt.Sprintf("%s/Solution%02d%s", yearFolderPath, date.Day, language.Ext)
 
-	if fileExists(fullpath) {
+	if FileExists(fullpath) {
 		fmt.Println("file already exists")
 		return fmt.Errorf("file already exists: %s", fullpath)
 	}
@@ -83,7 +90,7 @@ func createCodeFile(language languages.Language, date util.Date) error {
 
 	textWriter := bufio.NewWriter(file)
 
-	code := generateCode(language, date)
+	code := GenerateCode(language, date)
 
 	_, err = textWriter.WriteString(code)
 
@@ -96,7 +103,12 @@ func createCodeFile(language languages.Language, date util.Date) error {
 	return nil
 }
 
-func getDate(c *cli.Context, language languages.Language) *util.Date {
+func GetFullPath(language languages.Language, date util.Date) string {
+	yearFolderPath := GetYearsFolder(language, date)
+	return fmt.Sprintf("%s/Solution%02d%s", yearFolderPath, date.Day, language.Ext)
+}
+
+func GetDate(c *cli.Context, language languages.Language) *util.Date {
 	var nextDate util.Date
 
 	datestr := c.String("date")
@@ -110,7 +122,7 @@ func getDate(c *cli.Context, language languages.Language) *util.Date {
 	return &nextDate
 }
 
-func getLanguage(c *cli.Context) *languages.Language {
+func GetLanguage(c *cli.Context) *languages.Language {
 	languageName := c.String("language")
 
 	if languageName == "" {
@@ -127,13 +139,13 @@ func getLanguage(c *cli.Context) *languages.Language {
 	return language
 }
 
-func generatePath(yearFolder string) {
+func GeneratePath(yearFolder string) {
 	if err := os.MkdirAll(yearFolder, 0770); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func fileExists(filename string) bool {
+func FileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
@@ -141,7 +153,7 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func generateCode(language languages.Language, date util.Date) string {
+func GenerateCode(language languages.Language, date util.Date) string {
 	var code string
 
 	templatePath := fmt.Sprintf("Templates/%s.tmpl", language.Name)
