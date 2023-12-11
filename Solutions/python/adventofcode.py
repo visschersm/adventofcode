@@ -1,6 +1,7 @@
 import sys
 import getopt
 import importlib.util
+import os
 
 def main(argumentList):
     date = ""
@@ -36,8 +37,10 @@ def main(argumentList):
     strNum = strNum.rjust(2, '0')
 
     input = "Inputs/" + str(year) + "/" + strNum + ".txt"
-    if overrideFile is not None:
-        input = overrideFile
+    
+    if not os.path.exists(input):
+        print(input + " does not exist")
+        return
 
     module_name = "y" + str(year) + ".Solution" + strNum
 

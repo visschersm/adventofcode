@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -65,6 +66,7 @@ func GetNextDate(languageName string) Date {
 		}
 
 		nextDay := days[len(days)-1] + 1
+		fmt.Printf("Next day: %d\n", nextDay)
 		if nextDay > maxDay {
 			continue
 		}
@@ -115,12 +117,15 @@ func GetYears(folders []fs.DirEntry) []int {
 func GetDays(yearFolderPath string) []int {
 	var result []int
 
-	fmt.Printf("Getting the days in %s\n", yearFolderPath)
 	solutionFiles, err := os.ReadDir(yearFolderPath)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	sort.Slice(solutionFiles, func(i, j int) bool {
+		return solutionFiles[i].Name() < solutionFiles[j].Name()
+	})
 
 	for _, solution := range solutionFiles {
 		if solution.IsDir() {

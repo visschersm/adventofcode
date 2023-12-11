@@ -2,7 +2,7 @@
 
 include dirname(__DIR__)."\Solution.php";
 
-class Solution<day> implements Solution {
+class Solution02 implements Solution {
     public function Part1($inputFile) {
         echo "Part1 not yet implemented.\n";
     }
