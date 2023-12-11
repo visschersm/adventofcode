@@ -3,6 +3,8 @@ I enjoyed it so much I saved the assignments to I can tryout them in different c
 
 # Building the CLI tool
 - Make sure that you have golang installed by running ```go version```
-- Run the command: ```go build -o aoc.<extension of executable on your device> aoc_cli```
-- This will create a executable and place it in the root folder.
+- From the root folder: ```go install .\cli\```
+- This will install the adventofcode cli to $GOPATH/bin.
 - Now you can run the cli and use it to generate and solve the challenges of the adventofcode.
+
+

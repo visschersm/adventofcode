@@ -130,6 +130,11 @@ func Commands() {
 				},
 			},
 		},
+		{
+			Name:   "add",
+			Usage:  "Add language",
+			Action: AddLanguage,
+		},
 	}
 }
 
@@ -231,5 +236,10 @@ func OpenSolution(c *cli.Context) error {
 
 	cmd := exec.Command("code", filename)
 	cmd.Run()
+	return nil
+}
+
+func AddLanguage(c *cli.Context) error {
+	// TODO: Add language
 	return nil
 }
