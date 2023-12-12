@@ -25,7 +25,11 @@ var Languages = map[string]Language{
 		Commands: []Command{
 			{
 				Print:   true,
-				Command: exec.Command("echo", "c not yet implemented"),
+				Command: exec.Command("clang", "Solutions/c/adventofcode.c"),
+			},
+			{
+				Print:   true,
+				Command: exec.Command("./a.exe"),
 			},
 		},
 	},
