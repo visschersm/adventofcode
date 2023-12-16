@@ -1,22 +1,5 @@
-# Adding a new solution
-Chose the year for which you want to add a solution.
-Add a csharp code file with the name: 'solutiondd.go' where the 'dd' is replaced with the day for which you want to add the solution.
-
-In the code file include the following:
+To run the adventofcode solutions in go directly run the following command from the root directory:
 
 ```
-package yYYYY
-
-type SolutionDD struct{}
-
-func (s *SolutionDD) Part1(filename string) {
-	
-}
-
-func (s *SolutionDD) Part2(filename string) {
-	
-}
-
+go run .\Solutions\go\adventofcode.go -date yyyy/dd
 ```
-
-In the code file replace YYYY with the year and DD with the day for which the solution is.
