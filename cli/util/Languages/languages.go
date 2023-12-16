@@ -29,7 +29,7 @@ var Languages = map[string]Language{
 			},
 			{
 				Print:   true,
-				Command: exec.Command("./a.exe"),
+				Command: exec.Command("./a.exe", "<date>"),
 			},
 		},
 	},
