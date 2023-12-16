@@ -15,24 +15,24 @@ func main() {
 	date := getDate()
 
 	if date == nil {
-		fmt.Println("Provide a date for which to generate the solutions in format yyyy/dd")
+		fmt.Println("Provide a date for which to generate the solutions: -date yyyy/dd")
 		return
 	}
 
-	input_file := getInputFile(*date)
+	inputFile := getInputFile(*date)
 
-	solveForDate(*date, input_file)
+	solveForDate(*date, inputFile)
 }
 
 func getInputFile(date string) string {
-	input_file := flag.String("input_file", "", "")
+	inputFile := flag.String("inputFile", "", "")
 	flag.Parse()
 
-	if input_file == nil || *input_file == "" {
-		*input_file = fmt.Sprintf("Inputs/%d/%02d.txt", get_year(date), get_day(date))
+	if inputFile == nil || *inputFile == "" {
+		*inputFile = fmt.Sprintf("Inputs/%d/%02d.txt", getYear(date), getDay(date))
 	}
 
-	return *input_file
+	return *inputFile
 }
 
 func getDate() *string {
@@ -60,17 +60,17 @@ func solve(s lib.Solution, filename string) {
 }
 
 func solveForDate(date string, filename string) {
-	s := registration.GetSolution(get_year(date), get_day(date))
+	s := registration.GetSolution(getYear(date), getDay(date))
 	solve(s, filename)
 }
 
-func get_year(date string) int {
+func getYear(date string) int {
 	splittedDate := strings.Split(date, "/")
 	year, _ := strconv.Atoi(splittedDate[0])
 	return year
 }
 
-func get_day(date string) int {
+func getDay(date string) int {
 	splittedDate := strings.Split(date, "/")
 	day, _ := strconv.Atoi(splittedDate[1])
 	return day

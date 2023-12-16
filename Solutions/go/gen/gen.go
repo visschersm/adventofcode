@@ -8,21 +8,22 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	solutionDays := search_directories()
+	solutionDays := searchDirectories()
 
-	generate_code(solutionDays)
+	generateCode(solutionDays)
 }
 
 type Date struct {
 	year, day int
 }
 
-func search_directories() []Date {
+func searchDirectories() []Date {
 	var result []Date
 
 	folders, err := os.ReadDir(".")
@@ -70,34 +71,34 @@ func search_directories() []Date {
 	return result
 }
 
-func generate_code(dates []Date) {
+func generateCode(dates []Date) {
 	directory := "registration"
 	filename := directory
 	fullpath := directory + "/" + filename + ".go"
 
-	create_folder(directory)
-	remove_old_generation(fullpath)
+	createFolder(directory)
+	removeOldGeneration(fullpath)
 
-	file, ok := create_new_generation_file(fullpath)
+	file, ok := createNewGenerationFile(fullpath)
 	if !ok {
 		return
 	}
 	defer file.Close()
 
-	write_code(file, dates)
+	writeCode(file, dates)
 }
 
-func create_folder(directory string) {
+func createFolder(directory string) {
 	if err := os.MkdirAll(directory, 0770); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func remove_old_generation(fullpath string) {
+func removeOldGeneration(fullpath string) {
 	os.Remove(fullpath)
 }
 
-func create_new_generation_file(fullpath string) (*os.File, bool) {
+func createNewGenerationFile(fullpath string) (*os.File, bool) {
 	file, err := os.OpenFile(fullpath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -107,7 +108,7 @@ func create_new_generation_file(fullpath string) (*os.File, bool) {
 	return file, true
 }
 
-func get_years(dates []Date) []int {
+func getYears(dates []Date) []int {
 	result := []int{}
 
 	for _, date := range dates {
@@ -128,15 +129,14 @@ func isElementExist(s []int, str int) bool {
 	return false
 }
 
-func write_code(file *os.File, dates []Date) {
+func writeCode(file *os.File, dates []Date) {
 	textWriter := bufio.NewWriter(file)
 
-	code := get_code_template()
+	code := getCodeTemplate()
 
-	years := get_years(dates)
-	code = replace_years(code, years)
-
-	code = replace_solutions(code, dates)
+	years := getYears(dates)
+	code = replaceYears(code, years)
+	code = replaceSolutions(code, dates)
 
 	_, err := textWriter.WriteString(code)
 
@@ -146,12 +146,12 @@ func write_code(file *os.File, dates []Date) {
 	textWriter.Flush()
 }
 
-func get_code_template() string {
+func getCodeTemplate() string {
 	return `package registration
 
 import (
 	"adventofcode/lib"
-	<years>
+<years>
 	"fmt"
 )
 
@@ -166,18 +166,25 @@ func init() {
 	`
 }
 
-func replace_years(code string, years []int) string {
+func replaceYears(code string, years []int) string {
 	var yearImports string
 
 	for _, element := range years {
-		yearImports += "\"adventofcode/y" + strconv.Itoa(element) + "\""
+		yearImports += "\t\"adventofcode/y" + strconv.Itoa(element) + "\"\n"
 	}
 
 	return strings.Replace(code, "<years>", yearImports, -1)
 }
 
-func replace_solutions(code string, dates []Date) string {
+func replaceSolutions(code string, dates []Date) string {
 	var result string
+
+	sort.Slice(dates, func(i, j int) bool {
+		return dates[i].day < dates[j].day
+	})
+	sort.Slice(dates, func(i, j int) bool {
+		return dates[i].year < dates[j].year
+	})
 
 	for _, date := range dates {
 		year := date.year
