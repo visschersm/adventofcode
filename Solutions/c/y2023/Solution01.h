@@ -1,7 +1,7 @@
 #ifndef SOLUTION01_H
 #define SOLUTION01_H
 
-#include "Solution.h"
+#include "../Solution.h"
 
 typedef struct Solution01 Solution01;
 
