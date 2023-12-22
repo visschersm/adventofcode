@@ -135,6 +135,11 @@ func Commands() {
 			Usage:  "Add language",
 			Action: AddLanguage,
 		},
+		{
+			Name:   "update",
+			Usage:  "Update aoc cli tool",
+			Action: UpdateCLI,
+		},
 	}
 }
 
@@ -202,8 +207,23 @@ func GetInputFile(date util.Date) string {
 }
 
 func AddTodoItem(c *cli.Context) error {
-	fmt.Sprintf("Adding todoitem %s", c.Args().Get(0))
-	// TODO: Implement some logic to save todo's to a file or database.
+	todoItem := fmt.Sprintf("- [ ] %s\n", c.Args().First())
+	filename := "todolist.md"
+
+	// Open the file for appending (create it if it doesn't exist)
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Write the data to the file
+	_, err = file.WriteString(todoItem)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Data appended successfully.")
 	return nil
 }
 
@@ -241,5 +261,15 @@ func OpenSolution(c *cli.Context) error {
 
 func AddLanguage(c *cli.Context) error {
 	// TODO: Add language
+	return nil
+}
+
+func UpdateCLI(c *cli.Context) error {
+	fmt.Println("Updating cli...")
+	cmd := exec.Command("go", "install", "./cli")
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Updated cli")
 	return nil
 }
