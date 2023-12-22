@@ -17,12 +17,11 @@ endforeach()
 
 # Use the enumeration as a configuration option
 set(FEATURE ${FEATURE_OPTIONS} CACHE STRING "Select the feature")
-
 # Print the selected feature (optional, for verification)
 message(STATUS "Selected feature: ${FEATURE}")
 
 set(SOURCES)
-list(APPEND SOURCES adventofcode.c)
+list(APPEND SOURCES adventofcode.c date.c mystring.c)
 
 message("Selected solution: ${FEATURE}")
 if(NOT FEATURE IN_LIST FEATURE_OPTIONS)
@@ -33,3 +32,4 @@ message("Append solution: ${FEATURE}.c")
 list(APPEND SOURCES "${FEATURE}.c")
 
 add_executable(adventofcode ${SOURCES})
+target_compile_definitions(adventofcode PRIVATE MY_VARIABLE="${FEATURE}")
