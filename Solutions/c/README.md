@@ -1,5 +1,8 @@
-To run the adventofcode solutions in c directly run the following command from the root directory:
+To run the adventofcode solutions in c we use cmake.
+Run the following command from the root directory:
 
 ```
-clang .\Solutions\c\adventofcode.c; .\a.exe yyyy/dd
+cmake -DFEATURE=OPTION_B -B .\Solutions\c\build .\Solutions\c\; cmake --build .\Solutions\c\build\ --config Release; .\Solutions\c\build\Release\adventofcode.exe
+
+cmake -B .\Solutions\c\build Solution\c; cmake --build .\Solutions\c\build --config Release; .\Solutions\c\build\Release\adventofcode.exe yyyy/dd
 ```

@@ -24,12 +24,16 @@ var Languages = map[string]Language{
 		Ext:  ".c",
 		Commands: []Command{
 			{
-				Print:   true,
-				Command: exec.Command("clang", "Solutions/c/adventofcode.c"),
+				Print:   false,
+				Command: exec.Command("cmake", "-DFEATURE=y2023/Solution03", "-B", "Solutions/c/build", "Solutions/c"),
+			},
+			{
+				Print:   false,
+				Command: exec.Command("cmake", "--build", "Solutions/c/build", "--config", "Release"),
 			},
 			{
 				Print:   true,
-				Command: exec.Command("./a.exe", "<date>"),
+				Command: exec.Command("Solutions/c/build/Release/adventofcode.exe"),
 			},
 		},
 	},
