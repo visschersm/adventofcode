@@ -19,7 +19,7 @@ part1 inputFile = do
 part2 :: String -> IO()
 part2 inputFile = do
     input <- readFile inputFile
-    putStrLn "Part2 not yet implemented."
+    print ((countUnique (houses (fst (breakByIndex input)))) + (countUnique (houses (snd (breakByIndex input)))))
 
 countUnique = length . nubOrd
 
@@ -29,3 +29,13 @@ move (x, y) c = case c of
     '>' -> (x + 1, y)
     'v' -> (x, y - 1)
     '<' -> (x - 1, y) 
+
+-- https://stackoverflow.com/questions/49741305/how-to-pick-elements-in-even-index-and-odd-index
+breakByIndex :: [Char] -> ([Char], [Char])
+breakByIndex [] = ([], [])
+breakByIndex [e] = ([e], [])
+breakByIndex (e:o:xs) = 
+    let (es, os) = breakByIndex xs
+    in (e : es, o : os)
+
+
