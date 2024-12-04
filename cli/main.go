@@ -33,7 +33,7 @@ func main() {
 func Info() {
 	app.Name = "aoc"
 	app.Usage = "Tool to generate advent of code solution files in multiple languages."
-	app.Version = "0.0.5"
+	app.Version = "0.1.1"
 }
 
 func Commands() {
@@ -43,7 +43,6 @@ func Commands() {
 			Usage:  "Ask for random language",
 			Action: GetRandomSuggestion,
 		},
-
 		{
 			Name:  "generate",
 			Usage: "Generate Solution file for language",
@@ -109,11 +108,6 @@ func Commands() {
 			},
 		},
 		{
-			Name:   "todo",
-			Usage:  "Add todo item",
-			Action: AddTodoItem,
-		},
-		{
 			Name:   "open",
 			Usage:  "Open solution file",
 			Action: OpenSolution,
@@ -131,16 +125,25 @@ func Commands() {
 			},
 		},
 		{
-			Name:   "add",
-			Usage:  "Add language",
-			Action: AddLanguage,
-		},
-		{
 			Name:   "update",
 			Usage:  "Update aoc cli tool",
 			Action: UpdateCLI,
 		},
+		{
+			Name:   "list",
+			Usage:  "Lists available languages",
+			Action: ListLanguages,
+		},
 	}
+}
+
+func ListLanguages(c *cli.Context) error {
+	var availableLanguages = languages.GetAvailableLanguages()
+	for _, language := range availableLanguages {
+		fmt.Println(language)
+	}
+
+	return nil
 }
 
 func Solve(language languages.Language, date util.Date, inputFile string) {
@@ -206,27 +209,6 @@ func GetInputFile(date util.Date) string {
 	return fmt.Sprintf("Inputs/%d/%02d.txt", date.Year, date.Day)
 }
 
-func AddTodoItem(c *cli.Context) error {
-	todoItem := fmt.Sprintf("- [ ] %s\n", c.Args().First())
-	filename := "todolist.md"
-
-	// Open the file for appending (create it if it doesn't exist)
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Write the data to the file
-	_, err = file.WriteString(todoItem)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Data appended successfully.")
-	return nil
-}
-
 func OpenSolution(c *cli.Context) error {
 	log.Print("[OpenSolution]")
 
@@ -256,11 +238,6 @@ func OpenSolution(c *cli.Context) error {
 
 	cmd := exec.Command("code", filename)
 	cmd.Run()
-	return nil
-}
-
-func AddLanguage(c *cli.Context) error {
-	// TODO: Add language
 	return nil
 }
 
