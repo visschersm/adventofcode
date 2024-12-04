@@ -8,8 +8,8 @@ namespace AdventOfCode.Y2021;
 [Solution(2021, 4)]
 public class Solution04
 {
-    int[] numbersDrawn;
-    int amountOfNumbersDrawn = 0;
+    private int[] numbersDrawn = [];
+    private int amountOfNumbersDrawn = 0;
 
     [Part1]
     public void Part1(string filename)
@@ -29,16 +29,16 @@ public class Solution04
             var numberDrawn = DrawNextNumber();
             Console.WriteLine($"Number drawn: {numberDrawn}!");
 
-            foreach(var card in cards)
+            foreach (var card in cards)
             {
                 card.DrawMarked();
                 Console.WriteLine();
             }
 
-            foreach(var card in cards)
+            foreach (var card in cards)
             {
                 (bool complete, int index) = card.CheckCard(numberDrawn);
-                if(complete)
+                if (complete)
                 {
                     var unmarkedScore = card.GetUnmarkedSum();
                     Console.WriteLine($"Card with index: {card.Index + 1} won!");
@@ -95,7 +95,7 @@ public class Solution04
 
                 rowIndex++;
 
-                if(row.Equals(cardData.Last()))
+                if (row.Equals(cardData.Last()))
                     yield return card;
             }
         }
@@ -118,7 +118,7 @@ public class Solution04
         bool loserFound = false;
         do
         {
-            foreach(var card in cards)
+            foreach (var card in cards)
             {
                 card.Draw();
                 card.DrawMarked();
@@ -129,13 +129,13 @@ public class Solution04
 
             var numberDrawn = DrawNextNumber();
             Console.WriteLine($"Number drawn: {numberDrawn}!");
-            
-            foreach(var card in cards)
+
+            foreach (var card in cards)
             {
                 (bool complete, int index) = card.CheckCard(numberDrawn);
-                if(complete)
+                if (complete)
                 {
-                    if(cards.Count() == 1)
+                    if (cards.Count() == 1)
                     {
                         Console.WriteLine("Losing card found");
                         var unmarkedScore = card.GetUnmarkedSum();
@@ -180,7 +180,7 @@ public class Solution04
 
             rowIndex++;
 
-            if(row.Equals(cardData.Last()))
+            if (row.Equals(cardData.Last()))
                 yield return card;
         }
     }
@@ -192,8 +192,8 @@ public class Card
 {
     public int Index { get; }
     public Card(int index) => Index = index;
-    public int[,] Numbers = new int[5,5];
-    public int[,] MarkedNumbers = new int[5, 5] 
+    public int[,] Numbers = new int[5, 5];
+    public int[,] MarkedNumbers = new int[5, 5]
     {
          { -1, -1, -1, -1, -1 },
          { -1, -1, -1, -1, -1 },
@@ -209,7 +209,7 @@ public class Card
         {
             for (int x = 0; x < 5; ++x)
             {
-                if(x != 0) str.Append("\t");
+                if (x != 0) str.Append("\t");
                 str.Append(Numbers[y, x]);
             }
             str.Append(Environment.NewLine);
@@ -225,7 +225,7 @@ public class Card
         {
             for (int x = 0; x < 5; ++x)
             {
-                if(x != 0) str.Append("\t");
+                if (x != 0) str.Append("\t");
                 str.Append(MarkedNumbers[y, x]);
             }
             str.Append(Environment.NewLine);
@@ -240,7 +240,7 @@ public class Card
         {
             for (int x = 0; x < 5; ++x)
             {
-                if(Numbers[y, x] == numberDrawn)
+                if (Numbers[y, x] == numberDrawn)
                 {
                     MarkedNumbers[y, x] = numberDrawn;
                 }
@@ -265,7 +265,7 @@ public class Card
         {
             for (int x = 0; x < 5; ++x)
             {
-                if(MarkedNumbers[y, x] == -1)
+                if (MarkedNumbers[y, x] == -1)
                     result += Numbers[y, x];
             }
         }
@@ -285,12 +285,12 @@ public class Card
 
         return false;
     }
-    
+
     private bool IsColumnComplete(int columnIndex)
     {
         for (int y = 0; y < 5; ++y)
         {
-            if(MarkedNumbers[y, columnIndex] == -1)
+            if (MarkedNumbers[y, columnIndex] == -1)
                 return false;
         }
 
@@ -302,7 +302,7 @@ public class Card
     {
         for (int x = 0; x < 5; ++x)
         {
-            if(MarkedNumbers[rowIndex, x] == -1)
+            if (MarkedNumbers[rowIndex, x] == -1)
                 return false;
         }
 
